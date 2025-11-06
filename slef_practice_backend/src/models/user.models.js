@@ -1,25 +1,33 @@
 import mongoose from "mongoose";
+import Joi from "joi";
 
-const userSchema = mongoose.Schema({
-  username: {
-    type: String,
-    required: [true, "username is required"],
-    trim: true,
-    unique: true,
-    minlength: [6, "User Name at least have 6 characters"],
-    maxlength: [24, "User name length must be bellow or equal to 24"],
-  },
-  email: {
-    type: String,
-    required: [true, "email is required"],
-    trim: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, "password is required"],
-    minlength: [6, "Password must contain at least 6 characters"],
-  },
+export const userRegistrationValidationSchema = Joi.object({
+  username: Joi.string().min(6).max(24).trim().required().messages({
+    "string.empty": "username is required",
+    "string.min": "User Name must have at least 6 characters",
+    "string.max": "User Name length must be below or equal to 24",
+  }),
+
+  email: Joi.string().trim().required().messages({
+    "string.empty": "email is required",
+    "string.email": "Please enter a valid email address",
+  }),
+
+  password: Joi.string().min(6).required().messages({
+    "string.empty": "password is required",
+    "string.min": "Password must contain at least 6 characters",
+  }),
 });
 
-export const User = mongoose.model("User", userSchema);
+const userSchema = new mongoose.Schema(
+  {
+    username: {},
+    email: {},
+    password: {},
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const NewUser = mongoose.model("NewUser", userSchema);
