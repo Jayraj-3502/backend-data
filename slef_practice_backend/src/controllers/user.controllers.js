@@ -1,30 +1,39 @@
-import { NewUser } from "../models/user.models.js";
+import { User } from "../models/user.models.js";
+import bcrypt from "bcrypt";
+import ApiError from "../utils/ApiError.js";
 
 export async function registerNewUser(req, res) {
   try {
     const { username, email, password } = req.body;
 
-    const usernameExist = await NewUser.findOne({ username });
-    if (usernameExist) {
-      res.status(409).send("User Name already exist");
+    const userExistDetails = await User.findOne({ username, email });
+
+    if (userExistDetails) {
+      if (userExistDetails.username === username) {
+        res.status(409).send({ Message: "username already exist" });
+      } else if (userExistDetails.email) {
+        res.status(409).send({ Message: "email already exist" });
+      } else {
+        res.status(501).send({ Message: "Something went wrong" });
+      }
     }
 
-    const emailExist = await NewUser.findOne({ email });
-    if (emailExist) {
-      res.status(409).send("User Email already exist");
-    }
-
-    const newUser = await NewUser.create({ username, email, password });
+    const newPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      username,
+      email,
+      password: newPassword,
+    });
     res.status(201).send({ status: "created", data: newUser });
   } catch (err) {
-    res.status(500).send("Server Error", err);
+    res.status(500).send("Server Error", err.message);
   }
 }
 
 export async function loginUser(req, res) {
   try {
     const { username } = req.body;
-    const userExist = await NewUser.findOne({ username });
+    const userExist = await User.findOne({ username });
 
     if (!userExist) {
       return res.status(401).send({ Message: "User not found!" });
@@ -40,7 +49,7 @@ export async function loginUser(req, res) {
 
 export async function getAllUsersData(req, res) {
   try {
-    const users = await NewUser.find();
+    const users = await User.find();
     res.status(201).send({ mesage: "Users Data", users: users });
   } catch (err) {
     res.status(500).send({ Message: "Server Error", Error: err });
@@ -49,7 +58,7 @@ export async function getAllUsersData(req, res) {
 
 export async function getUserById(req, res) {
   try {
-    const user = await NewUser.findById(req.params.id);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).send({ Message: "User Not Found" });
     }
@@ -61,12 +70,12 @@ export async function getUserById(req, res) {
 
 export async function updateUserData(req, res) {
   try {
-    const userExist = await NewUser.findById(req.params.id);
+    const userExist = await User.findById(req.params.id);
     if (!userExist) {
       return res.status(404).send({ Message: "User not found" });
     }
 
-    const updatedUser = await NewUser.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
       { new: true, runValidators: true }
@@ -83,7 +92,7 @@ export async function updateUserData(req, res) {
 
 export async function deleteUserById(req, res) {
   try {
-    const userDelete = await NewUser.findByIdAndDelete(req.params.id);
+    const userDelete = await User.findByIdAndDelete(req.params.id);
     if (!userDelete) {
       return res.status(404).send({ message: "User not exist" });
     }
