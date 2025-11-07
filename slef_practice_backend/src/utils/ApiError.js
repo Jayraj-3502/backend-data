@@ -1,4 +1,4 @@
-export default function ApiError(statusCode, detailMessage) {
+export default function ApiError({ statusCode = 401, detailMessage = "" }) {
   return {
     success: false,
     statusCode,

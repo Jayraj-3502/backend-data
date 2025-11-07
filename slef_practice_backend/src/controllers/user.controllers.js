@@ -1,6 +1,7 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcrypt";
 import ApiError from "../utils/ApiError.js";
+import ApiResponce from "../utils/ApiResponce.js";
 
 export async function registerNewUser(req, res) {
   try {
@@ -10,11 +11,11 @@ export async function registerNewUser(req, res) {
 
     if (userExistDetails) {
       if (userExistDetails.username === username) {
-        res.status(409).send({ Message: "username already exist" });
+        ApiError({ statusCode: 409, detailMessage: "Username already exist." });
       } else if (userExistDetails.email) {
-        res.status(409).send({ Message: "email already exist" });
+        ApiError({ statusCode: 409, detailMessage: "Email already exist." });
       } else {
-        res.status(501).send({ Message: "Something went wrong" });
+        ApiError({ statusCode: 501, detailMessage: "Something went wrong." });
       }
     }
 
@@ -24,7 +25,7 @@ export async function registerNewUser(req, res) {
       email,
       password: newPassword,
     });
-    res.status(201).send({ status: "created", data: newUser });
+    res.status(201).send(ApiResponce());
   } catch (err) {
     res.status(500).send("Server Error", err.message);
   }
