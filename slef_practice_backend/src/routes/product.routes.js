@@ -5,21 +5,22 @@ import {
   getProductById,
   deleteProductById,
   updateProductById,
-} from "../controllers/product.controllers.js";
+  getSellerProducts,
+} from "../controllers/product.controller.js";
 import productMiddleware from "../middleware/product.middleware.js";
-import { productValidationSchema } from "../models/product.models.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const productRoutes = express.Router();
 
 productRoutes
   .route("/")
   .get(getAllProductDetails)
-  .post(productMiddleware(productValidationSchema), createNewProduct);
-
+  .post(authMiddleware, createNewProduct);
+productRoutes.route("/myproducts").get(authMiddleware, getSellerProducts);
 productRoutes
   .route("/:id")
   .get(getProductById)
-  .delete(deleteProductById)
-  .put(updateProductById);
+  .delete(authMiddleware, deleteProductById)
+  .put(authMiddleware, updateProductById);
 
 export default productRoutes;

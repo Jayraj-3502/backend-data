@@ -1,9 +1,12 @@
-export default function ApiError({ statusCode = 401, detailMessage = "" }) {
-  return {
+export default function ApiError({
+  res,
+  statusCode = 401,
+  detailMessage = "",
+}) {
+  return res.status(statusCode).send({
     success: false,
-    statusCode,
     error: {
       detailMessage,
     },
-  };
+  });
 }
