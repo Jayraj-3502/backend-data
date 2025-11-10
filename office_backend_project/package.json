@@ -1,0 +1,22 @@
+{
+  "name": "office_backend_project",
+  "version": "1.0.0",
+  "description": "This project is about office backend project. Working on this for practice my backend knowledge. This is not the assignment just an practice project.",
+  "license": "ISC",
+  "author": "jairaj rathod",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.3"
+  }
+}

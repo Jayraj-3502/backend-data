@@ -5,27 +5,32 @@ import ApiResponce from "../utils/ApiResponce.js";
 
 export async function registerNewUser(req, res) {
   try {
-    const { username, email, password } = req.body;
+    const { fullname, email, password } = req.body;
 
-    const userExistDetails = await User.findOne({ username, email });
+    const userExistDetails = await User.findOne({ email });
 
     if (userExistDetails) {
-      if (userExistDetails.username === username) {
-        ApiError({ statusCode: 409, detailMessage: "Username already exist." });
-      } else if (userExistDetails.email) {
-        ApiError({ statusCode: 409, detailMessage: "Email already exist." });
-      } else {
-        ApiError({ statusCode: 501, detailMessage: "Something went wrong." });
-      }
+      return res.status(404).send(
+        ApiError({
+          statusCode: 409,
+          detailMessage: "Email already exist.",
+        })
+      );
     }
 
     const newPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-      username,
+      fullname,
       email,
       password: newPassword,
     });
-    res.status(201).send(ApiResponce());
+    res.status(201).send(
+      ApiResponce({
+        statusCode: 201,
+        activityType: "New User Creation",
+        responceData: newUser,
+      })
+    );
   } catch (err) {
     res.status(500).send("Server Error", err.message);
   }
