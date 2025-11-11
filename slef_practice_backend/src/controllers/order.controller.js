@@ -36,8 +36,11 @@ export async function addOrder(req, res) {
       products: {
         product: productId,
         quantity: quantity,
-        price: quantity * productDetails.price,
+        price: productDetails.price,
       },
+      totalamount: quantity * productDetails.price,
+      orderdate: Date.now(),
+      status: "pending",
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });

@@ -1,4 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+
+const addressSchema = new Schema({
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  zipcode: { type: String, required: true },
+  country: { type: String, required: true },
+});
 
 const userSchema = new mongoose.Schema(
   {
@@ -8,7 +16,6 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       min: [6, "Minimum username length is 6 characters"],
-      max: [24, "Max username length is 24 characters"],
     },
     email: {
       type: String,
@@ -28,6 +35,7 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user", "seller"],
       default: "user",
     },
+    address: [addressSchema],
     cart: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
