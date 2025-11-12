@@ -45,11 +45,44 @@ export async function addOrder(req, res) {
       status: "processing",
     });
 
-    console.log(productDetails);
-
     await Product.findByIdAndUpdate(
       productDetails._id,
       { $set: { stock: productDetails.stock - quantity } },
+      { new: true, runValidators: true }
+    );
+
+    const totalorders = +userDetail.totalorders + +quantity;
+    const totalorderamount =
+      +userDetail.totalorderamount + +productDetails.price * +quantity;
+
+    await User.findByIdAndUpdate(
+      logginUser.id,
+      {
+        $set: {
+          totalorders: parseFloat(totalorders.toFixed(2)),
+          totalorderamount: parseFloat(totalorderamount.toFixed(2)),
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
+    const sellerDetails = await User.findById(productDetails.sellerid);
+
+    const totalproductsselled = +sellerDetails.totalproductsselled + +quantity;
+    const totalproductsselledamount =
+      +sellerDetails.totalproductsselledamount +
+      +productDetails.price * +quantity;
+
+    await User.findByIdAndUpdate(
+      sellerDetails._id,
+      {
+        $set: {
+          totalproductsselled: parseFloat(totalproductsselled.toFixed(2)),
+          totalproductsselledamount: parseFloat(
+            totalproductsselledamount.toFixed(2)
+          ),
+        },
+      },
       { new: true, runValidators: true }
     );
 

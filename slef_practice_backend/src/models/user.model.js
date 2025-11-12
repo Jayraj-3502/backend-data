@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema(
         quantity: { type: Number, default: 1 },
       },
     ],
+    totalorderamount: { type: Number, default: 0 },
+    totalorders: { type: Number, default: 0 },
+    totalproductofseller: { type: Number, default: 0 },
+    totalproductsselled: { type: Number, default: 0 },
+    totalproductsselledamount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

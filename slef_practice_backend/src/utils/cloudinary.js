@@ -1,10 +1,14 @@
 import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
 import fs from "fs";
+
+dotenv.config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  upload_prefix: "https://api-eu.cloudinary.com",
 });
 
 async function uploadOnCloudinary(localFilePath) {
@@ -21,3 +25,5 @@ async function uploadOnCloudinary(localFilePath) {
     return null;
   }
 }
+
+export default uploadOnCloudinary;

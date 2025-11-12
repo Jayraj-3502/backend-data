@@ -1,5 +1,5 @@
-import { Otp } from "../models/otp.model";
-import ApiError from "../utils/ApiError";
+import { Otp } from "../models/otp.model.js";
+import ApiError from "../utils/ApiError.js";
 
 export async function createOtp({ email = "", otp = "" }) {
   try {

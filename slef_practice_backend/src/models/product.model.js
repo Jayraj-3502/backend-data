@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const productSchema = mongoose.Schema(
   {
+    // image: { type: String, required: [true, "Product Image is required"] },
     name: { type: String, required: [true, "Product name is required"] },
     description: { type: String, required: [true, "Description is required"] },
     brand: { type: String, required: [true, "Brand is required"] },
