@@ -2,7 +2,7 @@ export default function ApiResponce({
   res,
   statusCode = 201,
   activityType = "",
-  responceData = {},
+  responceData = [],
 }) {
   return res.status(statusCode).send({
     success: true,

@@ -4,16 +4,12 @@ import jwt from "jsonwebtoken";
 import ApiError from "../utils/ApiError.js";
 import ApiResponce from "../utils/ApiResponce.js";
 import { Product } from "../models/product.model.js";
+import MailService from "../services/MailService.js";
+import { Otp } from "../models/otp.model.js";
 
 export async function registerNewUser(req, res) {
   try {
-    const {
-      fullname = "",
-      email = "",
-      password = "",
-      phone = "",
-      role = "user",
-    } = req.body;
+    const { email = "" } = req.body;
 
     const userExistDetails = await User.findOne({ email });
 
@@ -25,21 +21,25 @@ export async function registerNewUser(req, res) {
       });
     }
 
-    const newPassword = await bcrypt.hash(password, 10);
-    console.log(newPassword);
-    const newUser = await User.create({
-      fullname,
-      email,
-      password: newPassword,
-      phone,
-      role,
+    const emailSend = await MailService({
+      res,
+      recieverEmail: email,
+      subject: "Registration Verification",
+      emailType: "Registration Verification",
     });
-    console.log(newUser);
+
+    if (!emailSend)
+      return ApiError({
+        res,
+        statusCode: 500,
+        detailMessage: "Something went wrong",
+      });
+
     ApiResponce({
       res,
-      statusCode: 201,
-      activityType: "New User Creation",
-      responceData: newUser,
+      statusCode: 200,
+      activityType: "OTP send",
+      responceData: {},
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
@@ -227,4 +227,173 @@ export async function addToCart(req, res) {
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
   }
+}
+
+export async function verifyUserAndCreate(req, res) {
+  try {
+    const {
+      otp,
+      fullname,
+      email,
+      password,
+      phone = "",
+      role = "user",
+    } = req.body;
+
+    if (!otp)
+      return ApiError({ res, statusCode: 404, detailMessage: "OTP is empty" });
+
+    const otpExist = await Otp.findOne({ email });
+    if (!otpExist)
+      return ApiError({
+        res,
+        statusCode: 500,
+        detailMessage: "Something Went Wrong please register again",
+      });
+
+    if (otpExist.otp !== otp)
+      return ApiError({
+        res,
+        statusCode: 401,
+        detailMessage: "OTP is not the same",
+      });
+
+    const newPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      fullname,
+      email,
+      password: newPassword,
+      phone,
+      role,
+    });
+
+    if (!newUser)
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Something Went wrong",
+      });
+
+    const otpDeleted = await Otp.findByIdAndDelete(otpExist._id);
+
+    if (!otpDeleted)
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Something went wrong",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 201,
+      activityType: "New User Creation",
+      responceData: newUser,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function passwordForgotOtp(req, res) {
+  try {
+    console.log("This is running");
+    const { email } = req.body;
+    console.log("this is running");
+    const userExistDetails = await User.findOne({ email });
+
+    if (!userExistDetails) {
+      return ApiError({
+        res,
+        statusCode: 409,
+        detailMessage: "Email is not exist.",
+      });
+    }
+
+    const emailSend = await MailService({
+      res,
+      recieverEmail: email,
+      subject: "Forgot Password Verification",
+      emailType: "Forgot Password Verification",
+    });
+
+    if (!emailSend)
+      return ApiError({
+        res,
+        statusCode: 500,
+        detailMessage: "Something went wrong",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "OTP send",
+      responceData: {},
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function verificationForgotPassword(req, res) {
+  try {
+    const { otp, email } = req.body;
+
+    if (!otp)
+      return ApiError({ res, statusCode: 404, detailMessage: "OTP is empty" });
+
+    const otpExist = await Otp.findOne({ email });
+    if (!otpExist)
+      return ApiError({
+        res,
+        statusCode: 500,
+        detailMessage: "Something Went Wrong please register again",
+      });
+
+    if (otpExist.otp !== otp)
+      return ApiError({
+        res,
+        statusCode: 401,
+        detailMessage: "OTP is not the same",
+      });
+
+    const otpDeleted = await Otp.findByIdAndDelete(otpExist._id);
+
+    if (!otpDeleted)
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Something went wrong",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Update",
+      responceData: {},
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function resetForgotPassword(req, res) {
+  try {
+    const { password, email } = req.body;
+
+    const userExist = await User.findOne({ email });
+    if (!userExist)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "User Not Found",
+      });
+
+    const updateUser = await User.findByIdAndUpdate(
+      userExist._id,
+      {
+        $set: { password },
+      },
+      { new: true, runValidators: true }
+    );
+  } catch (err) {}
 }

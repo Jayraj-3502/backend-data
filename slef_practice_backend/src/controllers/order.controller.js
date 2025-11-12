@@ -2,6 +2,7 @@ import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
+import ApiResponce from "../utils/ApiResponce.js";
 
 export async function addOrder(req, res) {
   try {
@@ -33,6 +34,7 @@ export async function addOrder(req, res) {
 
     const newOrder = await Order.create({
       user: userDetail._id,
+      sellerid: productDetails.sellerid,
       products: {
         product: productId,
         quantity: quantity,
@@ -40,11 +42,167 @@ export async function addOrder(req, res) {
       },
       totalamount: quantity * productDetails.price,
       orderdate: Date.now(),
-      status: "pending",
+      status: "processing",
+    });
+
+    console.log(productDetails);
+
+    await Product.findByIdAndUpdate(
+      productDetails._id,
+      { $set: { stock: productDetails.stock - quantity } },
+      { new: true, runValidators: true }
+    );
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Placed",
+      responceData: newOrder,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
   }
 }
 
-export async function getOrders(req, res) {}
+export async function getOrdersForUser(req, res) {
+  try {
+    const logginUser = req.user;
+    if (logginUser.role != "user")
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Only user can access this",
+      });
+
+    const allOrders = await Order.find({ user: logginUser.id });
+    if (!allOrders)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "No Order found",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: allOrders["products"],
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function getOrdersForSeller(req, res) {
+  try {
+    const logginUser = req.user;
+    console.log(logginUser);
+    if (logginUser.role != "seller")
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Only Seller can access this",
+      });
+
+    const allOrders = await Order.find({ sellerid: logginUser.id });
+    if (!allOrders)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "No order found",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: allOrders,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function getOrdersForAdmin(req, res) {
+  try {
+    const logginUser = req.user;
+
+    if (logginUser.role != "admin")
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Only admin can access this",
+      });
+
+    const allOrders = await Order.find();
+
+    if (!allOrders)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "Orders are not found",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: allOrders,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function updateOrderStatus(req, res) {
+  try {
+    const logginUser = req.user;
+    const { orderid, status } = req.body;
+
+    if (logginUser.role === "user")
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "User can't update status",
+      });
+
+    const orderDetails = await Order.findById(orderid);
+    if (!orderDetails)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "Order not exist",
+      });
+
+    console.log(orderDetails.sellerid.toString(), logginUser.id);
+
+    if (orderDetails.sellerid.toString() !== logginUser.id)
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Seller Id not matched",
+      });
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderid,
+      { $set: { status: status } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedOrder)
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "Order Status not updated",
+      });
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Update",
+      responceData: updatedOrder,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}

@@ -50,3 +50,10 @@
 //     ApiError({ res, statusCode: 500, detailMessage: err });
 //   }
 // }
+
+export default function removeFromCart(req, res) {
+  try {
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
