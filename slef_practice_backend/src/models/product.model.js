@@ -10,6 +10,7 @@ const productSchema = mongoose.Schema(
     price: { type: Number, required: [true, "Price is required"], min: 0 },
     stock: { type: Number, default: 0, min: 0 },
     sellerid: { type: String, required: [true, "Seller ID is required"] },
+    totalSelled: { type: Number, default: 0 },
   },
   {
     timestamps: true,

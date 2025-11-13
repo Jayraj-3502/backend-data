@@ -126,10 +126,11 @@ export async function getOrdersForUser(req, res) {
   }
 }
 
+// This function is to get data of orders filter by the seller ID
 export async function getOrdersForSeller(req, res) {
   try {
     const logginUser = req.user;
-    console.log(logginUser);
+
     if (logginUser.role != "seller")
       return ApiError({
         res,
@@ -138,6 +139,7 @@ export async function getOrdersForSeller(req, res) {
       });
 
     const allOrders = await Order.find({ sellerid: logginUser.id });
+
     if (!allOrders)
       return ApiError({
         res,
@@ -156,6 +158,7 @@ export async function getOrdersForSeller(req, res) {
   }
 }
 
+// This function is to get data of all orders for admin
 export async function getOrdersForAdmin(req, res) {
   try {
     const logginUser = req.user;
@@ -207,9 +210,10 @@ export async function updateOrderStatus(req, res) {
         detailMessage: "Order not exist",
       });
 
-    console.log(orderDetails.sellerid.toString(), logginUser.id);
-
-    if (orderDetails.sellerid.toString() !== logginUser.id)
+    if (
+      logginUser.role === "seller" &&
+      orderDetails.sellerid.toString() !== logginUser.id
+    )
       return ApiError({
         res,
         statusCode: 400,

@@ -28,10 +28,11 @@ export async function totalFilter(req, res) {
 
 export async function userDetailsForAdmin(req, res) {
   try {
-    const allUsers = await User.find({ role: "user" });
+    const allUsers = await User.find({ role: "user" }).limit(20);
 
     const finalResponceData = allUsers.map((user) => {
       return {
+        id: user._id,
         fullName: user.fullname,
         totalOrders: user.totalorders,
         totalOrderAmount: user.totalorderamount,
@@ -51,10 +52,11 @@ export async function userDetailsForAdmin(req, res) {
 
 export async function sellerDetailsForAdmin(req, res) {
   try {
-    const allUsers = await User.find({ role: "seller" });
+    const allUsers = await User.find({ role: "seller" }).limit(20);
 
     const finalResponceData = allUsers.map((user) => {
       return {
+        id: user._id,
         fullName: user.fullname,
         totalNumberOfProduts: user.totalproductofseller || 0,
         totalProductsSelled: user.totalproductsselled,
@@ -95,7 +97,7 @@ export async function topUsersBasedOnOrder(req, res) {
 
 export async function topSellerBasedOnAmount(req, res) {
   try {
-    const topUser = await User.find({ role: "seller" })
+    const topSeller = await User.find({ role: "seller" })
       .sort({
         totalproductsselledamount: "desc",
       })
@@ -104,7 +106,7 @@ export async function topSellerBasedOnAmount(req, res) {
       res,
       statusCode: 200,
       activityType: "Fetch",
-      responceData: topUser,
+      responceData: topSeller,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: "Server Error" });

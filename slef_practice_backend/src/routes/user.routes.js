@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import {
   getAllUsersData,
   registerNewUser,
@@ -14,9 +15,10 @@ import {
 } from "../controllers/user.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
+const upload = multer({ dest: "./src/uploads" });
 const userRoutes = express.Router();
 
-userRoutes.route("/users").get(authMiddleware, getAllUsersData);
+userRoutes.route("/users").get(getAllUsersData);
 userRoutes.route("/register").post(registerNewUser);
 userRoutes.route("/otp").post(verifyUserAndCreate);
 userRoutes.route("/login").post(loginUser);

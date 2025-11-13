@@ -50,6 +50,7 @@ export async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
     const userExist = await User.findOne({ email });
+    console.log("This");
 
     if (!userExist) {
       return ApiError({
@@ -83,7 +84,7 @@ export async function loginUser(req, res) {
       res,
       statusCode: 201,
       activityType: "Login",
-      responceData: { userExist, token },
+      responceData: { token },
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
