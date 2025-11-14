@@ -6,8 +6,16 @@ import { loginUser } from "./user.controller.js";
 
 export async function getAllProductDetails(req, res) {
   try {
-    const allProducts = await Product.find();
-    res.status(201).send({ Message: "Products Found", Products: allProducts });
+    const allProducts = await Product.find().select(
+      "_id name price stock totalSelled"
+    );
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: allProducts,
+    });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
   }
@@ -93,27 +101,28 @@ export async function createNewProduct(req, res) {
 
 export async function deleteProductById(req, res) {
   try {
-    const logginUser = req.user;
+    // const logginUser = req.user;
 
-    if (logginUser.role === "user") {
-      return ApiError({
-        res,
-        statusCode: 402,
-        detailMessage: "You are not a seller or admin",
-      });
-    }
+    // if (logginUser.role === "user") {
+    //   return ApiError({
+    //     res,
+    //     statusCode: 402,
+    //     detailMessage: "You are not a seller or admin",
+    //   });
+    // }
 
+    console.log("delete run");
     const productDetails = await Product.findById(req.params.id);
 
-    if (logginUser.role === "seller") {
-      if (productDetails.sellerid !== logginUser.id) {
-        return ApiError({
-          res,
-          statusCode: 402,
-          detailMessage: "Seller Id not matched",
-        });
-      }
-    }
+    // if (logginUser.role === "seller") {
+    //   if (productDetails.sellerid !== logginUser.id) {
+    //     return ApiError({
+    //       res,
+    //       statusCode: 402,
+    //       detailMessage: "Seller Id not matched",
+    //     });
+    //   }
+    // }
 
     const productExist = await Product.findByIdAndDelete(req.params.id);
     if (!productExist) {

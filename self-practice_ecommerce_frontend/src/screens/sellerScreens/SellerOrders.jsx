@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersDetails } from "../../feature/admin.store";
-import { Dropdown } from "../../components/componentsExport";
 
-export default function AdminOrders() {
+export default function SellerOrders() {
   const dispatch = useDispatch();
   const { allOrders } = useSelector((state) => state.admin);
 
@@ -54,7 +52,7 @@ export default function AdminOrders() {
   );
 }
 
-function UsersTableRow({
+function SellerOrdersTableRow({
   sno,
   id,
   name = "",

@@ -7,8 +7,15 @@ import {
 } from "../../components/componentsExport";
 import { toast } from "react-toastify";
 import axios from "axios";
+import OTPInput from "./OTPInput";
+import InputFieldSecond from "../../components/inputs/InputFieldSecond";
+import DropdownSecond from "../../components/inputs/DropdownSecond";
+import { useDispatch, useSelector } from "react-redux";
+import { getOtpDetails } from "../../feature/users.store";
 
 export default function SignupScreen() {
+  const dispatch = useDispatch();
+  const { otp } = useSelector((state) => state.user);
   const [inputDetails, setInputDetails] = useState({
     fullname: "",
     email: "",
@@ -20,6 +27,7 @@ export default function SignupScreen() {
   const [confirmpassword, setConfirmPassword] = useState("");
   const [verificationOtp, setVerificationOtp] = useState("");
   const [popupEnable, setPopupEnable] = useState(false);
+  const [otpPopup, setOtpPopup] = useState(false);
 
   async function handleFormSubmit(event) {
     event.preventDefault();
@@ -27,153 +35,151 @@ export default function SignupScreen() {
       toast.error("Passwords are not matching");
       return;
     }
+
     console.log("Password are Matched");
 
-    const response = await axios.post("http://localhost:3000/regester", {});
+    const response = await axios.post("http://localhost:3000/register", {
+      email: inputDetails.email,
+    });
 
-    if (response.success) {
-      setPopupEnable(true);
+    if (response.data.success) {
+      setOtpPopup(true);
+      toast.success("OTP has been sended");
+    } else {
+      toast.error(response.data.error.detailMessage);
     }
-
-    console.log(response);
-  }
-
-  async function handleOtpVerification() {
-    const response = await axios.post();
   }
 
   return (
     <>
-      <form
-        action=""
-        onSubmit={handleFormSubmit}
-        className="flex flex-col gap-10 shadow-2xl min-w-fit w-fit p-5 rounded-xl mx-auto items-center"
+      <div
+        className={`flex flex-row justify-center items-center h-screen ${
+          otpPopup ? "hidden" : "block"
+        }`}
       >
-        <div className="text-5xl font-bold">Signup</div>
-        <div className="flex flex-col gap-2 items-center">
-          <div>
-            <InputField
-              name="fullname"
-              type="text"
-              defaultValue={inputDetails.fullname}
-              placeholderText="Enter Full Name"
-              required={true}
-              updaterFunction={(event) => {
-                setInputDetails((prev) => ({
-                  ...prev,
-                  fullname: event.target.value,
-                }));
-                console.log(event.target.value);
-              }}
-            />
-          </div>
-          <div>
-            <InputField
-              name="email"
-              type="email"
-              defaultValue={inputDetails.email}
-              placeholderText="Enter Emial"
-              required={true}
-              updaterFunction={(event) => {
-                setInputDetails((prev) => ({
-                  ...prev,
-                  email: event.target.value,
-                }));
-                console.log(event.target.value);
-              }}
-            />
-          </div>
-          <div>
-            <InputField
-              name="password"
-              type="password"
-              defaultValue={inputDetails.password}
-              placeholderText="Enter Password"
-              required={true}
-              updaterFunction={(event) => {
-                setInputDetails((prev) => ({
-                  ...prev,
-                  password: event.target.value,
-                }));
-                console.log(event.target.value);
-              }}
-            />
-          </div>
-          <div>
-            <InputField
-              name="confirmpassword"
-              type="password"
-              defaultValue={confirmpassword}
-              placeholderText="Enter Confirm Password"
-              required={true}
-              updaterFunction={(event) => {
-                setConfirmPassword(event.target.value);
-                console.log(event.target.value);
-              }}
-            />
-          </div>
-          <div>
-            <InputField
-              name="phone"
-              type="tel"
-              defaultValue={inputDetails.phone}
-              placeholderText="Enter Phone Number"
-              required={true}
-              updaterFunction={(event) => {
-                const value = event.target.value;
-                if (
-                  (value >= "a" && value <= "z") ||
-                  (value >= "A" && value <= "Z")
-                ) {
-                  console.log(event.target.value, "rhis");
-                } else {
+        <form
+          action=""
+          onSubmit={handleFormSubmit}
+          className="flex flex-col gap-10 shadow-2xl min-w-fit w-fit p-10 rounded-xl mx-auto items-center"
+        >
+          <div className="text-5xl font-bold">Signup</div>
+          <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-row gap-10 items-center">
+              <InputFieldSecond
+                label="Full Name"
+                name="fullname"
+                type="text"
+                defaultValue={inputDetails.fullname}
+                placeholderText="Enter Full Name"
+                required={true}
+                updaterFunction={(event) => {
                   setInputDetails((prev) => ({
                     ...prev,
-                    phone: event.target.value,
+                    fullname: event.target.value,
                   }));
                   console.log(event.target.value);
-                }
-              }}
-            />
-          </div>
-          <div>
-            <Dropdown
-              name="role"
-              defaultValue={inputDetails.role}
-              required={true}
-              updaterFunction={(event) => {
-                setInputDetails((prev) => ({
-                  ...prev,
-                  role: event.target.value,
-                }));
-                console.log(event.target.value);
-              }}
-              values={["user", "seller"]}
-            />
-          </div>
-          <div className="mt-5">
-            <SubmitButton text="Submit" buttonType="submit" />
-          </div>
-        </div>
-      </form>
+                }}
+              />
+              <InputFieldSecond
+                label="Email"
+                name="email"
+                type="email"
+                defaultValue={inputDetails.email}
+                placeholderText="Enter Emial"
+                required={true}
+                updaterFunction={(event) => {
+                  setInputDetails((prev) => ({
+                    ...prev,
+                    email: event.target.value,
+                  }));
+                  console.log(event.target.value);
+                }}
+              />
+            </div>
 
-      <form>
-        <div>Verification</div>
-        <div>OTP is sent to you email {inputDetails.email}</div>
-        <div>
-          <InputField
-            name="otp"
-            type="text"
-            defaultValue={verificationOtp}
-            placeholderText="Enter OTP"
-            required={true}
-            disable={!popupEnable}
-            updaterFunction={(event) => {
-              setVerificationOtp(event.target.value);
-            }}
-          />
-        </div>
-      </form>
+            <div className="flex flex-row gap-10 items-center">
+              <InputFieldSecond
+                label="Password"
+                name="password"
+                type="password"
+                defaultValue={inputDetails.password}
+                placeholderText="Enter Password"
+                required={true}
+                updaterFunction={(event) => {
+                  setInputDetails((prev) => ({
+                    ...prev,
+                    password: event.target.value,
+                  }));
+                  console.log(event.target.value);
+                }}
+              />
+              <InputFieldSecond
+                label="Confirm Password"
+                name="confirmpassword"
+                type="password"
+                defaultValue={confirmpassword}
+                placeholderText="Enter Confirm Password"
+                required={true}
+                updaterFunction={(event) => {
+                  setConfirmPassword(event.target.value);
+                  console.log(event.target.value);
+                }}
+              />
+            </div>
+
+            <div className="flex flex-row gap-10 items-center">
+              <InputFieldSecond
+                label="Phone"
+                name="phone"
+                type="tel"
+                defaultValue={inputDetails.phone}
+                placeholderText="Enter Phone Number"
+                required={true}
+                updaterFunction={(event) => {
+                  const value = event.target.value;
+                  if (
+                    (value >= "a" && value <= "z") ||
+                    (value >= "A" && value <= "Z")
+                  ) {
+                    event.target.value = "";
+                    console.log(event.target.value);
+                  } else {
+                    setInputDetails((prev) => ({
+                      ...prev,
+                      phone: event.target.value,
+                    }));
+                    console.log(event.target.value);
+                  }
+                }}
+              />
+              <DropdownSecond
+                name="role"
+                defaultValue="user"
+                required={true}
+                updaterFunction={(event) => {
+                  setInputDetails((prev) => ({
+                    ...prev,
+                    role: event.target.value,
+                  }));
+                  console.log(event.target.value);
+                }}
+                label="Role"
+                options={[
+                  { label: "User", value: "user" },
+                  { label: "Seller", value: "seller" },
+                ]}
+              />
+            </div>
+            <div className="mt-5">
+              <SubmitButton text="Submit" buttonType="submit" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div className={`${otpPopup ? "block" : "hidden"}`}>
+        <OTPInput />
+      </div>
     </>
   );
 }

@@ -7,6 +7,8 @@ import SellerTile from "./tiles/SellerTile";
 import UserTile from "./tiles/UserTile";
 import UserDetailsForAdmin from "./tiles/admin/UserDetailsForAdmin";
 import SellerDetailsForAdmin from "./tiles/admin/SellerDetailsForAdmin";
+import FullProductDetails from "./cards/FullProductDetails";
+import TopNavigation from "./navbar/TopNavigation";
 
 export {
   Button,
@@ -18,4 +20,6 @@ export {
   UserTile,
   UserDetailsForAdmin,
   SellerDetailsForAdmin,
+  FullProductDetails,
+  TopNavigation,
 };

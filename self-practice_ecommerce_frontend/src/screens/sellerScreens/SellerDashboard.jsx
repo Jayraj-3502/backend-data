@@ -1,24 +1,24 @@
-import { FaHome, FaShoppingCart } from "react-icons/fa";
-import SideNavifation from "../../components/navbar/SideNavigation";
 import { Outlet } from "react-router-dom";
+import SideNavifation from "../../components/navbar/SideNavigation";
+import { FaHome, FaShoppingCart } from "react-icons/fa";
 import { FaBoxOpen, FaUsers } from "react-icons/fa6";
 
-export default function AdminDashboard() {
+export default function SellerDashboard() {
   const menuItems = [
     {
       name: "Dashboard",
       icon: <FaHome />,
-      path: "/admin-dashboard/home",
+      path: "/seller-dashboard/home",
     },
     {
       name: "Products",
       icon: <FaBoxOpen />,
-      path: "/admin-dashboard/products",
+      path: "/seller-dashboard/products",
     },
     {
       name: "Orders",
       icon: <FaShoppingCart />,
-      path: "/admin-dashboard/orders",
+      path: "/seller-dashboard/orders",
     },
     {
       name: "Users",
@@ -31,10 +31,9 @@ export default function AdminDashboard() {
       path: "/admin-dashboard/sellers",
     },
   ];
-
   return (
     <div className="flex">
-      <SideNavifation sideMenuHeading="Admin" sideMenuItems={menuItems} />
+      <SideNavifation sideMenuHeading="Seller" sideMenuItems={menuItems} />
       <main className="ml-64 flex-1 bg-gray-100 min-h-screen p-6">
         <Outlet />
       </main>

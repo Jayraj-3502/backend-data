@@ -7,7 +7,7 @@ import { createOtp, updateOtp } from "../controllers/otp.controller.js";
 // import ApiResponce from "../utils/ApiResponce.js";
 
 async function MailService({ res, recieverEmail, subject, emailType }) {
-  const OTP = otpGenerator();
+  const OTP = "789456";
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -20,12 +20,13 @@ async function MailService({ res, recieverEmail, subject, emailType }) {
   });
 
   const info = await transporter.sendMail({
-    from: '"This is Email" <jarathod@bestpeers.in>',
+    from: '"Verificaion" <jarathod@bestpeers.in>',
     to: recieverEmail,
     subject,
     text: "",
     html: htmlTemplateEmail(OTP, emailType), // HTML body
   });
+  console.log("this");
 
   if (!info) return false;
 

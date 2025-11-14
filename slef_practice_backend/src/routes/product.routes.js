@@ -23,7 +23,7 @@ productRoutes.route("/myproducts").get(authMiddleware, getSellerProducts);
 productRoutes
   .route("/:id")
   .get(getProductById)
-  .delete(authMiddleware, deleteProductById)
+  .delete(deleteProductById)
   .put(authMiddleware, updateProductById);
 
 export default productRoutes;

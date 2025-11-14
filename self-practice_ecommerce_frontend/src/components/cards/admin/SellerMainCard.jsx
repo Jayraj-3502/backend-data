@@ -5,38 +5,28 @@ import { SellerDetailsForAdmin } from "../../componentsExport";
 import { MdSell } from "react-icons/md";
 
 export default function SellerMainCard({ displayData = [] }) {
+  const descriptionDataArray = [
+    {
+      icon: <FaCartShopping color="gray" />,
+      text: "Total Products Data",
+    },
+    {
+      icon: <MdSell color="red" />,
+      text: "Selled Products",
+    },
+    {
+      icon: <RiMoneyRupeeCircleFill color="green" />,
+      text: "Products Selled Revenue",
+    },
+  ];
   return (
-    <div className="shadow p-5 min-w-fit w-[500px]">
+    <div className="shadow p-5 bg-white min-w-fit w-[500px]">
       <div className="text-2xl font-bold">Seller Detail</div>
-      <div className="flex flex-row gap-5">
-        <div className="flex flex-row gap-7">
-          <div className="flex flex-row gap-2 items-center">
-            <span>
-              <FaCartShopping color="gray" />
-            </span>
-            <span>
-              <FaLongArrowAltRight />
-            </span>
-            <span>Total Product Number</span>
-          </div>
-          <div className="flex flex-row gap-2 items-center">
-            <span>
-              <MdSell color="red" />
-            </span>
-            <span>
-              <FaLongArrowAltRight />
-            </span>
-            <span>Selled Products</span>
-          </div>
-          <div className="flex flex-row gap-2 items-center">
-            <span>
-              <RiMoneyRupeeCircleFill color="green" />
-            </span>
-            <span>
-              <FaLongArrowAltRight />
-            </span>
-            <span>Products Selled Amount</span>
-          </div>
+      <div className="mt-5">
+        <div className="flex flex-col gap-2 ">
+          {descriptionDataArray.map((data) => (
+            <DescriptionData icon={data.icon} text={data.text} />
+          ))}
         </div>
       </div>
       <hr className="my-5" />
@@ -54,6 +44,18 @@ export default function SellerMainCard({ displayData = [] }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function DescriptionData({ icon = "", text = "" }) {
+  return (
+    <div className="flex flex-row gap-2 items-center">
+      <span>{icon}</span>
+      <span>
+        <FaLongArrowAltRight />
+      </span>
+      <span>{text}</span>
     </div>
   );
 }

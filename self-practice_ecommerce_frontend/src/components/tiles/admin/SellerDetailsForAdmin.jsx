@@ -9,7 +9,7 @@ export default function SellerDetailsForAdmin({
   totalProductsSelledAmount = 0,
 }) {
   return (
-    <div className="p-3 shadow  rounded-full flex flex-row gap-5 min-w-fit w-[300px]">
+    <div className="p-3 shadow bg-white rounded-full flex flex-row gap-5 min-w-fit w-[300px]">
       <div>
         <img
           src="ef"

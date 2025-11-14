@@ -9,7 +9,7 @@ export default function UserMainCard({
   moneyText = "",
 }) {
   return (
-    <div className="shadow p-5 min-w-fit w-[500px]">
+    <div className="shadow p-5 bg-white min-w-fit w-[500px]">
       <div className="text-2xl font-bold">Users Detail</div>
       <div className="flex flex-row gap-5">
         <div className="flex flex-row gap-2 items-center">

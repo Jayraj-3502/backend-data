@@ -7,9 +7,16 @@ import {
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-export default function SideNavifation() {
+export default function SideNavifation({
+  sideMenuItems = [],
+  sideMenuHeading = "",
+}) {
   const menuItems = [
-    { name: "Dashboard", icon: <FaHome />, path: "/admin-dashboard" },
+    {
+      name: "Dashboard",
+      icon: <FaHome />,
+      path: "/admin-dashboard/home",
+    },
     {
       name: "Products",
       icon: <FaBoxOpen />,
@@ -21,30 +28,35 @@ export default function SideNavifation() {
       path: "/admin-dashboard/orders",
     },
     {
-      name: "Customers",
+      name: "Users",
       icon: <FaUsers />,
-      path: "/admin-dashboard/customers",
+      path: "/admin-dashboard/users",
+    },
+    {
+      name: "Sellers",
+      icon: <FaUsers />,
+      path: "/admin-dashboard/sellers",
     },
   ];
 
   return (
-    <div className="h-screen w-64 bg-gray-900 text-gray-200 flex flex-col fixed">
+    <div className="h-screen w-64 bg-blue-600 text-gray-200 flex flex-col fixed">
       {/* Logo / Header */}
       <div className="text-2xl font-bold text-center py-6 border-b border-gray-700">
-        MyStore
+        {sideMenuHeading}
       </div>
 
       {/* Navigation Links */}
       <nav className="flex-1 px-4 py-6 space-y-2">
-        {menuItems.map((item) => (
+        {sideMenuItems.map((item) => (
           <NavLink
             key={item.name}
             to={item.path}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2 rounded-md transition-all ${
                 isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                  ? "bg-blue-900 text-white"
+                  : "text-white hover:bg-gray-800 hover:text-white"
               }`
             }
           >

@@ -1,4 +1,5 @@
 import { Order } from "../models/order.model.js";
+import { Product } from "../models/product.model.js";
 import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponce from "../utils/ApiResponce.js";
@@ -7,6 +8,7 @@ import ApiResponce from "../utils/ApiResponce.js";
 export async function totalFilter(req, res) {
   try {
     const allOrders = await Order.find();
+    const allProducts = await Product.find();
 
     const totalAmount = allOrders.reduce((acc, order) => {
       return acc + order.totalamount;
@@ -17,8 +19,9 @@ export async function totalFilter(req, res) {
       statusCode: 200,
       activityType: "Fetch",
       responceData: {
-        totaluser: allOrders.length,
-        totalamount: totalAmount,
+        totalordersold: allOrders.length,
+        totalorderrevenue: totalAmount,
+        totalproductcount: allProducts.length,
       },
     });
   } catch (err) {
@@ -28,22 +31,15 @@ export async function totalFilter(req, res) {
 
 export async function userDetailsForAdmin(req, res) {
   try {
-    const allUsers = await User.find({ role: "user" }).limit(20);
-
-    const finalResponceData = allUsers.map((user) => {
-      return {
-        id: user._id,
-        fullName: user.fullname,
-        totalOrders: user.totalorders,
-        totalOrderAmount: user.totalorderamount,
-      };
-    });
+    const allUsers = await User.find({ role: "user" })
+      .limit(20)
+      .select("_id fullname totalorders totalorderamount");
 
     ApiResponce({
       res,
       statusCode: 200,
       activityType: "Fetch",
-      responceData: finalResponceData,
+      responceData: allUsers,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
@@ -52,25 +48,17 @@ export async function userDetailsForAdmin(req, res) {
 
 export async function sellerDetailsForAdmin(req, res) {
   try {
-    const allUsers = await User.find({ role: "seller" }).limit(20);
-
-    const finalResponceData = allUsers.map((user) => {
-      return {
-        id: user._id,
-        fullName: user.fullname,
-        totalNumberOfProduts: user.totalproductofseller || 0,
-        totalProductsSelled: user.totalproductsselled,
-        totalProductsSelledAmount: user.totalproductsselledamount,
-      };
-    });
-
-    console.log(finalResponceData);
+    const allSellers = await User.find({ role: "seller" })
+      .limit(20)
+      .select(
+        "_id fullname totalproductofseller totalproductsselled totalproductsselledamount"
+      );
 
     ApiResponce({
       res,
       statusCode: 200,
       activityType: "Fetch",
-      responceData: finalResponceData,
+      responceData: allSellers,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
@@ -110,5 +98,38 @@ export async function topSellerBasedOnAmount(req, res) {
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: "Server Error" });
+  }
+}
+
+export async function getAllProductDetails(req, res) {
+  try {
+    const allProducts = await Product.find().select(
+      "_id name price stock totalSelled"
+    );
+
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: allProducts,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function getAllOrdersDetails(req, res) {
+  try {
+    const response = await Order.find()
+      .populate("user", "fullname")
+      .populate("products.product", "name");
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: response,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
   }
 }

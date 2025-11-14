@@ -4,9 +4,11 @@ export default function Dropdown({
   required = false,
   updaterFunction = () => {},
   values = [],
+  style = "",
 }) {
   return (
     <select
+      className={style}
       name={name}
       defaultValue={defaultValue}
       required={required}
