@@ -1,8 +1,22 @@
 import { FaStar } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCustomerCart } from "../../feature/customer.store";
+import { tokenVerfication } from "../../feature/users.store";
+import { useNavigate } from "react-router-dom";
 
-export default function FullProductDetails({ productDetails }) {
+export default function FullProductDetails({ id, productDetails }) {
   const { name, description, price, stock, color, brand, rating, image } =
     productDetails;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+
+  async function addToCardFunction() {
+    await dispatch(
+      addToCustomerCart({ userId: currentUser._id, productId: id })
+    );
+    await dispatch(tokenVerfication());
+  }
 
   return (
     <div className="bg-white shadow-lg rounded-xl p-6 max-w-4xl mx-auto hover:shadow-xl transition">
@@ -11,7 +25,7 @@ export default function FullProductDetails({ productDetails }) {
         {/* Product Image */}
         <div className="w-full md:w-1/2 h-60 md:h-80 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
           <img
-            src={image || "https://via.placeholder.com/300"}
+            src={image || "hjkh"}
             alt={name}
             className="w-full h-full object-cover"
           />
@@ -60,7 +74,7 @@ export default function FullProductDetails({ productDetails }) {
           <div className="flex gap-4 pt-3">
             {/* Add to Cart */}
             <button
-              disabled={stock === 0}
+              onClick={addToCardFunction}
               className={`w-1/2 py-2 rounded-lg text-white text-lg transition
                 ${
                   stock === 0
@@ -74,6 +88,9 @@ export default function FullProductDetails({ productDetails }) {
             {/* Buy Now */}
             <button
               disabled={stock === 0}
+              onClick={() => {
+                navigate(`/dashboard/buynow`);
+              }}
               className={`w-1/2 py-2 rounded-lg text-white text-lg transition
                 ${
                   stock === 0

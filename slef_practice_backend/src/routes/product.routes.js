@@ -14,16 +14,13 @@ const upload = multer({ dest: "./src/uploads/" });
 
 const productRoutes = express.Router();
 
-productRoutes
-  .route("/")
-  .get(getAllProductDetails)
-  .post(authMiddleware, createNewProduct);
+productRoutes.route("/").get(getAllProductDetails).post(createNewProduct);
 
 productRoutes.route("/myproducts").get(authMiddleware, getSellerProducts);
 productRoutes
   .route("/:id")
   .get(getProductById)
   .delete(deleteProductById)
-  .put(authMiddleware, updateProductById);
+  .put(updateProductById);
 
 export default productRoutes;

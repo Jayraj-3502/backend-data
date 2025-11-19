@@ -33,7 +33,7 @@ export default function TopNavigation() {
         </button>
 
         {/* Profile Image */}
-        <Link to="./profile">
+        <Link to="./profile/details">
           <img
             src="asdasf"
             alt="Profile"

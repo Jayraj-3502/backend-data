@@ -7,11 +7,11 @@ import {
   deleteUserById,
   updateUserData,
   loginUser,
-  addToCart,
   verifyUserAndCreate,
   passwordForgotOtp,
   resetForgotPassword,
   verificationForgotPassword,
+  getUserDataBasedOnToken,
 } from "../controllers/user.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
@@ -22,18 +22,18 @@ userRoutes.route("/users").get(getAllUsersData);
 userRoutes.route("/register").post(registerNewUser);
 userRoutes.route("/otp").post(verifyUserAndCreate);
 userRoutes.route("/login").post(loginUser);
-userRoutes.route("/user/cart").put(authMiddleware, addToCart);
 userRoutes.route("/forgotpassword").post(passwordForgotOtp);
 userRoutes
   .route("/verificationforgotpassword")
   .post(verificationForgotPassword);
 
 userRoutes.route("/resetPassword").post(resetForgotPassword);
+userRoutes.route("/tokenverification").post(getUserDataBasedOnToken);
 
 userRoutes
   .route("/user/:id")
   .get(authMiddleware, getUserById)
   .delete(authMiddleware, deleteUserById)
-  .put(authMiddleware, updateUserData);
+  .put(updateUserData);
 
 export default userRoutes;

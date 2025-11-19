@@ -39,7 +39,6 @@ const userSchema = new mongoose.Schema(
     cart: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-        quantity: { type: Number, default: 1 },
       },
     ],
     totalorderamount: { type: Number, default: 0 },
@@ -47,6 +46,7 @@ const userSchema = new mongoose.Schema(
     totalproductofseller: { type: Number, default: 0 },
     totalproductsselled: { type: Number, default: 0 },
     totalproductsselledamount: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

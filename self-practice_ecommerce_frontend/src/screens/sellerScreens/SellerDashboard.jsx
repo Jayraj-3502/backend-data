@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import SideNavifation from "../../components/navbar/SideNavigation";
 import { FaHome, FaShoppingCart } from "react-icons/fa";
 import { FaBoxOpen, FaUsers } from "react-icons/fa6";
+import { RiProfileFill } from "react-icons/ri";
 
 export default function SellerDashboard() {
   const menuItems = [
@@ -21,22 +22,17 @@ export default function SellerDashboard() {
       path: "/seller-dashboard/orders",
     },
     {
-      name: "Users",
-      icon: <FaUsers />,
-      path: "/admin-dashboard/users",
-    },
-    {
-      name: "Sellers",
-      icon: <FaUsers />,
-      path: "/admin-dashboard/sellers",
+      name: "Profile",
+      icon: <RiProfileFill />,
+      path: "/seller-dashboard/profile",
     },
   ];
   return (
     <div className="flex">
       <SideNavifation sideMenuHeading="Seller" sideMenuItems={menuItems} />
-      <main className="ml-64 flex-1 bg-gray-100 min-h-screen p-6">
+      <div className="ml-64 flex-1 bg-gray-100 min-h-screen p-6">
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 }

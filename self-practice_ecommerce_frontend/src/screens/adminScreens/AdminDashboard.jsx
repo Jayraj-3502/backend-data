@@ -2,6 +2,7 @@ import { FaHome, FaShoppingCart } from "react-icons/fa";
 import SideNavifation from "../../components/navbar/SideNavigation";
 import { Outlet } from "react-router-dom";
 import { FaBoxOpen, FaUsers } from "react-icons/fa6";
+import { RiProfileFill } from "react-icons/ri";
 
 export default function AdminDashboard() {
   const menuItems = [
@@ -29,6 +30,11 @@ export default function AdminDashboard() {
       name: "Sellers",
       icon: <FaUsers />,
       path: "/admin-dashboard/sellers",
+    },
+    {
+      name: "Profile",
+      icon: <RiProfileFill />,
+      path: "/admin-dashboard/profile",
     },
   ];
 

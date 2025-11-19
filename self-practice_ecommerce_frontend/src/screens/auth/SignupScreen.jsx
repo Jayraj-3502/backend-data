@@ -11,7 +11,6 @@ import OTPInput from "./OTPInput";
 import InputFieldSecond from "../../components/inputs/InputFieldSecond";
 import DropdownSecond from "../../components/inputs/DropdownSecond";
 import { useDispatch, useSelector } from "react-redux";
-import { getOtpDetails } from "../../feature/users.store";
 
 export default function SignupScreen() {
   const dispatch = useDispatch();
@@ -178,7 +177,7 @@ export default function SignupScreen() {
       </div>
 
       <div className={`${otpPopup ? "block" : "hidden"}`}>
-        <OTPInput />
+        <OTPInput data={inputDetails} />
       </div>
     </>
   );

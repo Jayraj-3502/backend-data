@@ -49,10 +49,10 @@ export async function registerNewUser(req, res) {
 export async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
-    const userExist = await User.findOne({ email });
+    const userDetails = await User.findOne({ email });
     console.log("This");
 
-    if (!userExist) {
+    if (!userDetails) {
       return ApiError({
         res,
         statusCode: 404,
@@ -60,7 +60,7 @@ export async function loginUser(req, res) {
       });
     }
 
-    const passwordMatch = await bcrypt.compare(password, userExist.password);
+    const passwordMatch = await bcrypt.compare(password, userDetails.password);
 
     if (!passwordMatch) {
       return ApiError({
@@ -72,9 +72,9 @@ export async function loginUser(req, res) {
 
     const token = jwt.sign(
       {
-        id: userExist._id,
-        emial: userExist.email,
-        role: userExist.role,
+        id: userDetails._id,
+        emial: userDetails.email,
+        role: userDetails.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
@@ -84,7 +84,7 @@ export async function loginUser(req, res) {
       res,
       statusCode: 201,
       activityType: "Login",
-      responceData: { token },
+      responceData: { token, userDetails },
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
@@ -135,20 +135,16 @@ export async function getUserById(req, res) {
 
 export async function updateUserData(req, res) {
   try {
-    const logginUser = req.user;
+    const { fullname, phone } = req.body;
 
-    const userExist = await User.findById(logginUser.id);
+    const userExist = await User.findById(req.params.id);
     if (!userExist) {
       return res.status(404).send({ Message: "User not found" });
     }
 
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
-    }
-
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: { fullname, phone } },
       { new: true, runValidators: true }
     );
 
@@ -175,55 +171,6 @@ export async function deleteUserById(req, res) {
       statusCode: 200,
       activityType: "Delete",
       responceData: userDelete,
-    });
-  } catch (err) {
-    ApiError({ res, statusCode: 500, detailMessage: err });
-  }
-}
-
-export async function addToCart(req, res) {
-  try {
-    const logginUser = req.user;
-    const { productId, quantity = 1 } = req.body;
-
-    const userDetails = await User.findById(logginUser.id);
-    if (!userDetails)
-      return ApiError({
-        res,
-        statusCode: 404,
-        detailMessage: "User Not Found",
-      });
-
-    const productDetails = await Product.findById(productId);
-
-    console.log(productDetails);
-
-    if (!productDetails)
-      return ApiError({
-        res,
-        statusCode: 404,
-        detailMessage: "Product not found",
-      });
-
-    console.log("This is running");
-
-    const itemIndex = userDetails.cart.findIndex(
-      (item) => item.product.toString() === productId
-    );
-
-    if (itemIndex > -1) {
-      userDetails.cart[itemIndex].quantity += +quantity;
-    } else {
-      userDetails.cart.push({ product: productId, quantity });
-    }
-
-    await userDetails.save();
-
-    ApiResponce({
-      res,
-      statusCode: 200,
-      activityType: "Creation or Update",
-      responceData: userDetails,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
@@ -397,4 +344,23 @@ export async function resetForgotPassword(req, res) {
       { new: true, runValidators: true }
     );
   } catch (err) {}
+}
+
+export async function getUserDataBasedOnToken(req, res) {
+  try {
+    const { token } = req.body;
+    console.log(token);
+    const tokenDecrept = jwt.verify(token, process.env.JWT_SECRET);
+    const userDetails = await User.findById(tokenDecrept.id).select(
+      "id fullname email phone role totalorderamount totalorders totalproductofseller totalproductsselled totalproductsselledamount address cart"
+    );
+    ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: userDetails,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
 }

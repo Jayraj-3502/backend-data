@@ -6,38 +6,14 @@ import {
   FaChartBar,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import { logoutUser } from "../../feature/users.store";
+import { useDispatch } from "react-redux";
 
 export default function SideNavifation({
   sideMenuItems = [],
   sideMenuHeading = "",
 }) {
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: <FaHome />,
-      path: "/admin-dashboard/home",
-    },
-    {
-      name: "Products",
-      icon: <FaBoxOpen />,
-      path: "/admin-dashboard/products",
-    },
-    {
-      name: "Orders",
-      icon: <FaShoppingCart />,
-      path: "/admin-dashboard/orders",
-    },
-    {
-      name: "Users",
-      icon: <FaUsers />,
-      path: "/admin-dashboard/users",
-    },
-    {
-      name: "Sellers",
-      icon: <FaUsers />,
-      path: "/admin-dashboard/sellers",
-    },
-  ];
+  const dispatch = useDispatch();
 
   return (
     <div className="h-screen w-64 bg-blue-600 text-gray-200 flex flex-col fixed">
@@ -68,7 +44,12 @@ export default function SideNavifation({
 
       {/* Footer or Logout */}
       <div className="p-4 border-t border-gray-700">
-        <button className="w-full bg-red-600 py-2 rounded-md text-white hover:bg-red-700">
+        <button
+          onClick={() => {
+            dispatch(logoutUser());
+          }}
+          className="w-full bg-red-600 py-2 rounded-md text-white hover:bg-red-700"
+        >
           Logout
         </button>
       </div>

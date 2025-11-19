@@ -37,6 +37,16 @@ export const getCurrentProductDetails = createAsyncThunk(
   }
 );
 
+export const deleteProductByID = createAsyncThunk(
+  "product/deleteProductByID",
+  async (id) => {
+    console.log(id);
+    const response = await axios.delete(`http://localhost:3000/products/${id}`);
+    console.log(response.data);
+    return response.data;
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -55,7 +65,14 @@ const productSlice = createSlice({
         state.currentProductDetails = action.payload.data.responceData;
         console.log(state.currentProductDetails);
       })
-      .addCase(getCurrentProductDetails.rejected, (state, action) => {});
+      .addCase(getCurrentProductDetails.rejected, (state, action) => {})
+
+      .addCase(deleteProductByID.pending, (state, action) => {})
+      .addCase(deleteProductByID.fulfilled, (state, action) => {
+        state.currentProductDetails = action.payload.data.responceData;
+        console.log(state.currentProductDetails);
+      })
+      .addCase(deleteProductByID.rejected, (state, action) => {});
   },
 });
 

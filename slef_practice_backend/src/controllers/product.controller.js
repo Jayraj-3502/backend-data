@@ -1,4 +1,5 @@
 import { Product } from "../models/product.model.js";
+import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponce from "../utils/ApiResponce.js";
 import { uploadFile } from "../utils/uploadFile.js";
@@ -6,9 +7,9 @@ import { loginUser } from "./user.controller.js";
 
 export async function getAllProductDetails(req, res) {
   try {
-    const allProducts = await Product.find().select(
-      "_id name price stock totalSelled"
-    );
+    const allProducts = await Product.find({ active: true })
+      .select("_id name price stock totalSelled")
+      .limit(20);
 
     ApiResponce({
       res,
@@ -48,17 +49,9 @@ export async function getSellerProducts(req, res) {
 
 export async function createNewProduct(req, res) {
   try {
-    const logginUser = req.user;
-
-    if (logginUser.role === "user") {
-      return ApiError({
-        res,
-        statusCode: 400,
-        detailMessage: "User can add product",
-      });
-    }
-
+    console.log(req.body);
     const {
+      sellerId = "",
       name = "",
       description = "",
       brand = "",
@@ -67,6 +60,14 @@ export async function createNewProduct(req, res) {
       stock = 0,
     } = req.body;
 
+    // if (userData.role === "user") {
+    //   return ApiError({
+    //     res,
+    //     statusCode: 400,
+    //     detailMessage: "User can add product",
+    //   });
+    // }
+
     const newProduct = await Product.create({
       name,
       description,
@@ -74,13 +75,13 @@ export async function createNewProduct(req, res) {
       price,
       color,
       stock,
-      sellerid: logginUser.id,
+      sellerid: sellerId,
     });
 
-    const userDetails = User.findById(logginUser.id);
+    const userDetails = await User.findById(sellerId);
 
     await User.findByIdAndUpdate(
-      logginUser.id,
+      sellerId,
       {
         $set: { totalproductofseller: +userDetails.totalproductofseller + +1 },
       },
@@ -101,31 +102,30 @@ export async function createNewProduct(req, res) {
 
 export async function deleteProductById(req, res) {
   try {
-    // const logginUser = req.user;
-
-    // if (logginUser.role === "user") {
-    //   return ApiError({
-    //     res,
-    //     statusCode: 402,
-    //     detailMessage: "You are not a seller or admin",
-    //   });
-    // }
-
     console.log("delete run");
-    const productDetails = await Product.findById(req.params.id);
+    const productDetails = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { active: false },
+      },
+      { new: true, runValidators: true }
+    );
 
-    // if (logginUser.role === "seller") {
-    //   if (productDetails.sellerid !== logginUser.id) {
-    //     return ApiError({
-    //       res,
-    //       statusCode: 402,
-    //       detailMessage: "Seller Id not matched",
-    //     });
-    //   }
-    // }
+    if (!productDetails) {
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "Product not found",
+      });
+    }
 
-    const productExist = await Product.findByIdAndDelete(req.params.id);
-    if (!productExist) {
+    const updateUser = await User.findByIdAndUpdate(
+      productDetails.sellerid,
+      { $inc: { totalproductofseller: -1 } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updateUser) {
       return ApiError({
         res,
         statusCode: 404,
@@ -146,15 +146,6 @@ export async function deleteProductById(req, res) {
 
 export async function updateProductById(req, res) {
   try {
-    const logginUser = req.user;
-
-    if (logginUser.role === "user")
-      return ApiError({
-        res,
-        statusCode: 402,
-        detailMessage: "Your are not a seller or admin",
-      });
-
     const productExist = await Product.findById(req.params.id);
 
     if (!productExist) {
@@ -163,15 +154,6 @@ export async function updateProductById(req, res) {
         statusCode: 404,
         detailMessage: "Product not found",
       });
-    }
-
-    if (logginUser.role === "seller") {
-      if (productExist.sellerid !== logginUser.id)
-        return ApiError({
-          res,
-          statusCode: 402,
-          detailMessage: "Seller Id not matched",
-        });
     }
 
     const updatedUser = await Product.findByIdAndUpdate(

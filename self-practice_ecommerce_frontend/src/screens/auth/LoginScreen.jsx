@@ -22,7 +22,14 @@ export default function LoginScreen() {
     const data = await dispatch(loginUser(loginDetalis));
     console.log(data.payload.success);
     if (data.payload.success) {
-      toast.success("User Loggind in");
+      const userData = data?.payload?.data?.responceData?.userDetails;
+      if (userData?.role === "user") {
+        navigate("/dashboard/home");
+      } else if (userData?.role === "seller") {
+        navigate("/seller-dashboard/home");
+      } else {
+        navigate("/admin-dashboard/home");
+      }
     }
   }
 

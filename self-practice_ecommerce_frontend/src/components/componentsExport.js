@@ -9,6 +9,7 @@ import UserDetailsForAdmin from "./tiles/admin/UserDetailsForAdmin";
 import SellerDetailsForAdmin from "./tiles/admin/SellerDetailsForAdmin";
 import FullProductDetails from "./cards/FullProductDetails";
 import TopNavigation from "./navbar/TopNavigation";
+import Popup from "./popup/Popup";
 
 export {
   Button,
@@ -22,4 +23,5 @@ export {
   SellerDetailsForAdmin,
   FullProductDetails,
   TopNavigation,
+  Popup,
 };

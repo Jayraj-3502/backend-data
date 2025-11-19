@@ -1,8 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersDetails } from "../../feature/admin.store";
+import { getAllOrdersForSeller } from "../../feature/seller.store";
+import { useEffect } from "react";
 
 export default function SellerOrders() {
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
   const { allOrders } = useSelector((state) => state.admin);
 
   const tableHeaderText = [
@@ -15,8 +18,9 @@ export default function SellerOrders() {
   ];
 
   useEffect(() => {
-    dispatch(getAllOrdersDetails());
-  }, []);
+    console.log("Getting Orders");
+    dispatch(getAllOrdersForSeller({ id: currentUser._id }));
+  }, [currentUser]);
 
   return (
     <div className="overflow-x-auto">
@@ -36,7 +40,7 @@ export default function SellerOrders() {
 
         <tbody className="divide-y divide-gray-200">
           {allOrders.map((order, index) => (
-            <UsersTableRow
+            <SellerOrdersTableRow
               key={order._id}
               sno={index + 1}
               id={order._id}

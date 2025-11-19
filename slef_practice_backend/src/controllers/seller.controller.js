@@ -5,8 +5,14 @@ import ApiResponce from "../utils/ApiResponce.js";
 
 export async function allProductsWithDetails(req, res) {
   try {
-    const logginUser = req.user;
-    const sellerAllProducts = await Product.find({ sellerid: logginUser.id });
+    const { sellerId } = req.body;
+    console.log("sellerID", sellerId);
+    const sellerAllProducts = await Product.find({
+      sellerid: sellerId,
+      active: true,
+    }).exec();
+
+    console.log("All Products", sellerAllProducts);
 
     ApiResponce({
       res,

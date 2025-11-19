@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentProductDetails } from "../../feature/products.store";
 import { FullProductDetails } from "../../components/componentsExport";
+import OrderScreen from "./OrderScreen";
 
 export default function ProductDetailsScreen() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function ProductDetailsScreen() {
   return (
     <div className="p-5 flex flex-row justify-center items-center mt-10">
       <div>
-        <FullProductDetails productDetails={currentProductDetails} />
+        <FullProductDetails productDetails={currentProductDetails} id={id} />
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ export async function totalFilter(req, res) {
 
 export async function userDetailsForAdmin(req, res) {
   try {
-    const allUsers = await User.find({ role: "user" })
+    const allUsers = await User.find({ role: "user", active: true })
       .limit(20)
       .select("_id fullname totalorders totalorderamount");
 
@@ -48,7 +48,7 @@ export async function userDetailsForAdmin(req, res) {
 
 export async function sellerDetailsForAdmin(req, res) {
   try {
-    const allSellers = await User.find({ role: "seller" })
+    const allSellers = await User.find({ role: "seller", active: true })
       .limit(20)
       .select(
         "_id fullname totalproductofseller totalproductsselled totalproductsselledamount"

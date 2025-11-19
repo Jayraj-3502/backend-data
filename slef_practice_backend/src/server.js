@@ -10,6 +10,7 @@ import { createNewProduct } from "./controllers/product.controller.js";
 import adminRoute from "./routes/admin.routes.js";
 import sellerRoute from "./routes/seller.routes.js";
 import cors from "cors";
+import cartRoute from "./routes/cart.route.js";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/order", orderRoute);
 app.use("/upload", uploadRoute);
 app.use("/admin-dashboard", adminRoute);
 app.use("/seller-dashboard", sellerRoute);
+app.use("/cart", cartRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is rinning on PORT http://localhost:${PORT}`);

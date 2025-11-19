@@ -7,7 +7,7 @@ import ApiResponce from "../utils/ApiResponce.js";
 export async function addOrder(req, res) {
   try {
     const logginUser = req.user;
-    const { productId, quantity } = req.body;
+    const { productId, quantity, total } = req.body;
 
     const userDetail = await User.findById(logginUser.id);
     if (!userDetail)
@@ -52,8 +52,7 @@ export async function addOrder(req, res) {
     );
 
     const totalorders = +userDetail.totalorders + +quantity;
-    const totalorderamount =
-      +userDetail.totalorderamount + +productDetails.price * +quantity;
+    const totalorderamount = +userDetail.totalorderamount + +total;
 
     await User.findByIdAndUpdate(
       logginUser.id,
@@ -100,6 +99,7 @@ export async function addOrder(req, res) {
 export async function getOrdersForUser(req, res) {
   try {
     const logginUser = req.user;
+    console.log(logginUser);
     if (logginUser.role != "user")
       return ApiError({
         res,
@@ -107,7 +107,10 @@ export async function getOrdersForUser(req, res) {
         detailMessage: "Only user can access this",
       });
 
-    const allOrders = await Order.find({ user: logginUser.id });
+    const allOrders = await Order.find({ user: logginUser.id }).populate(
+      "products.product",
+      "name"
+    );
     if (!allOrders)
       return ApiError({
         res,
@@ -119,7 +122,7 @@ export async function getOrdersForUser(req, res) {
       res,
       statusCode: 200,
       activityType: "Fetch",
-      responceData: allOrders["products"],
+      responceData: allOrders,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
@@ -129,16 +132,10 @@ export async function getOrdersForUser(req, res) {
 // This function is to get data of orders filter by the seller ID
 export async function getOrdersForSeller(req, res) {
   try {
-    const logginUser = req.user;
+    const { id } = req.params.id;
+    console.log(id);
 
-    if (logginUser.role != "seller")
-      return ApiError({
-        res,
-        statusCode: 400,
-        detailMessage: "Only Seller can access this",
-      });
-
-    const allOrders = await Order.find({ sellerid: logginUser.id });
+    const allOrders = await Order.find({ sellerid: id });
 
     if (!allOrders)
       return ApiError({

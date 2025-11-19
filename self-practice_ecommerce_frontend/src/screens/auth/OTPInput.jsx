@@ -1,33 +1,27 @@
 import { useRef, useState } from "react";
+import InputFieldSecond from "../../components/inputs/InputFieldSecond";
+import { useDispatch } from "react-redux";
+import { getOtpVerification } from "../../feature/users.store";
+import { useNavigate } from "react-router-dom";
 
 export default function OTPInput({ data }) {
-  const inputs = useRef([]);
-  const [finalOtp, setFinalOtp] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [otp, setOtp] = useState("");
   const [verifyEnable, setVerifyEnable] = useState(false);
 
-  const handleChange = (e, index) => {
-    const value = e.target.value;
+  console.log(data);
 
-    // Only allow numbers
-    if (!/^[0-9]?$/.test(value)) return;
-
-    // Move to next input
-    if (value && index < 5) {
-      inputs.current[index + 1].focus();
-    }
-
-    // Move back when deleting
-    if (!value && index > 0) {
-      inputs.current[index - 1].focus();
-    }
-  };
-
-  function verification() {
-    inputs?.current.forEach((value) => {
-      setFinalOtp((prev) => prev + value.value);
-    });
-
+  async function verifyOTP() {
     setVerifyEnable(true);
+    data.otp = otp;
+    const response = await dispatch(getOtpVerification(data));
+    console.log(response.payload);
+    if (response.payload.success) {
+      navigate("/login");
+    } else {
+      setVerifyEnable(false);
+    }
   }
 
   return (
@@ -38,20 +32,21 @@ export default function OTPInput({ data }) {
           Enter the 6-digit code sent to your email
         </p>
 
-        <div className="flex justify-center gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <input
-              key={i}
-              maxLength="1"
-              ref={(el) => (inputs.current[i] = el)}
-              onChange={(e) => handleChange(e, i)}
-              className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          ))}
+        <div className="flex flex-row justify-center">
+          <InputFieldSecond
+            name="opt"
+            type="text"
+            placeholderText="Enter OTP"
+            defaultValue={otp}
+            required={true}
+            updaterFunction={(event) => {
+              setOtp((prev) => event.target.value);
+            }}
+          />
         </div>
 
         <button
-          onClick={verification}
+          onClick={verifyOTP}
           disabled={verifyEnable}
           className="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg text-lg hover:bg-blue-700 transition disabled:bg-blue-900"
         >

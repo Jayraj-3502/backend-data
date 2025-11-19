@@ -11,6 +11,7 @@ const productSchema = mongoose.Schema(
     stock: { type: Number, default: 0, min: 0 },
     sellerid: { type: String, required: [true, "Seller ID is required"] },
     totalSelled: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
   },
   {
     timestamps: true,

@@ -13,11 +13,6 @@ const cartSchema = new Schema({
         ref: "Project",
         required: true,
       },
-      quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-      },
     },
   ],
 });
