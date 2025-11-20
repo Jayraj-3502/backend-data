@@ -14,6 +14,6 @@ orderRoute.route("/add").post(authMiddleware, addOrder);
 orderRoute.route("/update").put(authMiddleware, updateOrderStatus);
 orderRoute.route("/userorders").get(authMiddleware, getOrdersForUser);
 orderRoute.route("/adminorders").get(getOrdersForAdmin);
-orderRoute.route("/sellerorders/:id").get(getOrdersForSeller);
+orderRoute.route("/sellerorders").get(authMiddleware, getOrdersForSeller);
 
 export default orderRoute;

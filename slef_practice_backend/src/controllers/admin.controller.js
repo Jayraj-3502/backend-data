@@ -29,6 +29,7 @@ export async function totalFilter(req, res) {
   }
 }
 
+// All user Details for Admin
 export async function userDetailsForAdmin(req, res) {
   try {
     const allUsers = await User.find({ role: "user", active: true })
@@ -46,6 +47,7 @@ export async function userDetailsForAdmin(req, res) {
   }
 }
 
+// All Active seller details for admin
 export async function sellerDetailsForAdmin(req, res) {
   try {
     const allSellers = await User.find({ role: "seller", active: true })
@@ -65,9 +67,10 @@ export async function sellerDetailsForAdmin(req, res) {
   }
 }
 
+// Top active user based on order count
 export async function topUsersBasedOnOrder(req, res) {
   try {
-    const topUser = await User.find({ role: "user" })
+    const topUser = await User.find({ role: "user", active: true })
       .sort({
         totalorders: "desc",
       })
@@ -83,9 +86,10 @@ export async function topUsersBasedOnOrder(req, res) {
   }
 }
 
+// Top active seller based on revenue amount
 export async function topSellerBasedOnAmount(req, res) {
   try {
-    const topSeller = await User.find({ role: "seller" })
+    const topSeller = await User.find({ role: "seller", active: true })
       .sort({
         totalproductsselledamount: "desc",
       })
@@ -101,9 +105,10 @@ export async function topSellerBasedOnAmount(req, res) {
   }
 }
 
+// All active products details
 export async function getAllProductDetails(req, res) {
   try {
-    const allProducts = await Product.find().select(
+    const allProducts = await Product.find({ active: true }).select(
       "_id name price stock totalSelled"
     );
 
@@ -118,6 +123,7 @@ export async function getAllProductDetails(req, res) {
   }
 }
 
+// All orders details
 export async function getAllOrdersDetails(req, res) {
   try {
     const response = await Order.find()
@@ -131,5 +137,92 @@ export async function getAllOrdersDetails(req, res) {
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+// delete user by setting active false
+export async function deleteUserByAdmin(req, res) {
+  try {
+    const logginUser = req.user;
+    const { userid } = req.body;
+
+    if (logginUser.role !== "admin")
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "You are not Admin",
+      });
+
+    const deleteUser = await User.findByIdAndUpdate(
+      userid,
+      {
+        $set: { active: false },
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!deleteUser)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "User Not Found",
+      });
+
+    return ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Delete",
+      responceData: deleteUser,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: "" });
+  }
+}
+
+// delete seller by setting active false
+export async function deleteSellerByAdmin(req, res) {
+  try {
+    const logginUser = req.user;
+    const { sellerid } = req.body;
+
+    if (logginUser.role !== "admin")
+      return ApiError({
+        res,
+        statusCode: 400,
+        detailMessage: "You are not Admin",
+      });
+
+    const confirmSeller = await User.findById(sellerid);
+
+    if (!confirmSeller)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "This is not a seller id",
+      });
+
+    const deleteUser = await User.findByIdAndUpdate(
+      sellerid,
+      {
+        $set: { active: false },
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!deleteUser)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "User Not Found",
+      });
+
+    return ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Delete",
+      responceData: deleteUser,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: "" });
   }
 }

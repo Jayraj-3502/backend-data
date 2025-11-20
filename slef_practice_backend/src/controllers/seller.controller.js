@@ -1,3 +1,4 @@
+import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
@@ -69,6 +70,83 @@ export async function sellerTotalFilter(req, res) {
       statusCode: 200,
       activityType: "Fetch",
       responceData: finalResponceData,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function totalFilterOfSeller(req, res) {
+  try {
+    const logginUser = req.user;
+
+    const allProducts = await Product.find({
+      sellerid: logginUser.id,
+      active: true,
+    }).select("stock");
+
+    const totalOrderCount = (await Order.find({ sellerid: logginUser.id }))
+      .length;
+    const totalCustomersCount = (
+      await Order.distinct("user", {
+        sellerid: logginUser.id,
+      })
+    ).length;
+
+    let totalStockCount = 0;
+
+    allProducts.forEach((product) => {
+      totalStockCount += +product.stock;
+    });
+
+    return ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: { totalStockCount, totalOrderCount, totalCustomersCount },
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function orderDeliveryStatus(req, res) {
+  try {
+    const logginUser = req.user;
+
+    const allOrdersStatus = await Order.find({
+      sellerid: logginUser.id,
+    }).select("status");
+
+    const orderStatusCount = {
+      pending: 0,
+      processing: 0,
+      shipping: 0,
+      delivered: 0,
+      cancled: 0,
+      totalCount: allOrdersStatus.length,
+    };
+
+    allOrdersStatus.forEach((order) => {
+      if (order.status === "pending") {
+        orderStatusCount.pending += 1;
+      } else if (order.status === "processing") {
+        orderStatusCount.processing += 1;
+      } else if (order.status === "shipping") {
+        orderStatusCount.shipping += 1;
+      } else if (order.status === "delivered") {
+        orderStatusCount.delivered += 1;
+      } else if (order.status === "cancled") {
+        orderStatusCount.cancled += 1;
+      } else {
+      }
+    });
+
+    return ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Fetch",
+      responceData: orderStatusCount,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });

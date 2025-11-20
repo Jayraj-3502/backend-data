@@ -43,19 +43,21 @@ export default function ProfileOrders() {
 
         <tbody className="divide-y divide-gray-200">
           {console.log(allOrders)}
-          {allOrders.map((order, index) => {
-            return (
-              <UserOrdersTableRow
-                key={order.products[0].product._id}
-                sno={index + 1}
-                id={order.products[0].product._id}
-                name={order.products[0].product.name}
-                quantity={order.products[0].quantity}
-                price={order.products[0].price}
-                status={order.status}
-              />
-            );
-          })}
+          {allOrders &&
+            allOrders.map((order, index) => {
+              return (
+                <UserOrdersTableRow
+                  key={order.products[0].product._id + index}
+                  sno={index + 1}
+                  id={order.products[0].product._id}
+                  name={order.products[0].product.name}
+                  quantity={order.products[0].quantity}
+                  price={order.products[0].price}
+                  total={order.totalamount}
+                  status={order.status}
+                />
+              );
+            })}
         </tbody>
       </table>
     </div>
@@ -68,6 +70,7 @@ function UserOrdersTableRow({
   name = "",
   quantity = "",
   price = "",
+  total = "",
   status = "",
 }) {
   return (
@@ -78,7 +81,7 @@ function UserOrdersTableRow({
       </td>
       <td className="px-6 py-4 text-sm text-gray-700">{quantity}</td>
       <td className="px-6 py-4 text-sm text-gray-700">{price}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">${price * quantity}</td>
+      <td className="px-6 py-4 text-sm text-gray-700">${total}</td>
       <td className="px-6 py-4 text-sm text-gray-700">{status}</td>
     </tr>
   );

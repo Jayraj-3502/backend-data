@@ -28,7 +28,7 @@ export async function addToCart(req, res) {
       (item) => item.product.toString() === productId
     );
 
-    if (itemIndex < -1) {
+    if (itemIndex == -1) {
       userDetails.cart.push({ product: productId });
     }
 

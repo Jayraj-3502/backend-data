@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  allOrders: {},
+  allOrders: [],
   allCartItems: [],
 };
 
@@ -32,6 +32,7 @@ export const addToCustomerCart = createAsyncThunk(
   "customer/addToCustomerCart",
   async ({ userId, productId }) => {
     try {
+      console.log(userId, productId);
       const response = await axios.post("http://localhost:3000/cart/add", {
         userId,
         productId,

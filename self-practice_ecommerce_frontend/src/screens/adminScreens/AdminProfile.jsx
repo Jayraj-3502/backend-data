@@ -53,7 +53,7 @@ export default function AdminProfile() {
           />
 
           <h2 className="text-xl font-semibold mt-3">{fullname}</h2>
-          <p className="text-gray-500 text-sm">Seller</p>
+          <p className="text-gray-500 text-sm">Admin</p>
         </div>
 
         <hr className="my-5" />
@@ -62,9 +62,9 @@ export default function AdminProfile() {
         <div className="space-y-3">
           <PeraFiled label={"Email"} data={email} />
           <PeraFiled label={"Phone"} data={phone} />
-          <PeraFiled label={"Total Products"} data={totalproductofseller} />
+          {/* <PeraFiled label={"Total Products"} data={totalproductofseller} />
           <PeraFiled label={"Total Selles"} data={totalproductsselled} />
-          <PeraFiled label={"Total Revenue"} data={totalproductsselledamount} />
+          <PeraFiled label={"Total Revenue"} data={totalproductsselledamount} /> */}
         </div>
 
         <button
@@ -72,6 +72,15 @@ export default function AdminProfile() {
           className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
         >
           Edit Profile
+        </button>
+
+        <button
+          onClick={() => {
+            dispatch(logoutUser());
+          }}
+          className="w-full bg-red-600 text-white px-5 py-2 rounded-lg mt-3 hover:bg-red-700 transition"
+        >
+          Logout
         </button>
 
         <Popup

@@ -43,16 +43,6 @@ export default function SideNavifation({
       </nav>
 
       {/* Footer or Logout */}
-      <div className="p-4 border-t border-gray-700">
-        <button
-          onClick={() => {
-            dispatch(logoutUser());
-          }}
-          className="w-full bg-red-600 py-2 rounded-md text-white hover:bg-red-700"
-        >
-          Logout
-        </button>
-      </div>
     </div>
   );
 }

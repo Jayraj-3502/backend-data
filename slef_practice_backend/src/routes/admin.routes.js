@@ -1,5 +1,7 @@
 import express from "express";
 import {
+  deleteSellerByAdmin,
+  deleteUserByAdmin,
   getAllOrdersDetails,
   getAllProductDetails,
   sellerDetailsForAdmin,
@@ -8,6 +10,7 @@ import {
   totalFilter,
   userDetailsForAdmin,
 } from "../controllers/admin.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const adminRoute = express.Router();
 
@@ -18,5 +21,7 @@ adminRoute.route("/topusersbyorder").get(topUsersBasedOnOrder);
 adminRoute.route("/topsellerbyamount").get(topSellerBasedOnAmount);
 adminRoute.route("/allproducts").get(getAllProductDetails);
 adminRoute.route("/allorders").get(getAllOrdersDetails);
+adminRoute.route("/deleteuser").delete(authMiddleware, deleteUserByAdmin);
+adminRoute.route("/deleteseller").delete(authMiddleware, deleteSellerByAdmin);
 
 export default adminRoute;

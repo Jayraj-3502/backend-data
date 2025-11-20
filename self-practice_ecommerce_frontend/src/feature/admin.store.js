@@ -82,6 +82,51 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const deleteUserForAdmin = createAsyncThunk(
+  "admin/deleteUserForAdmin",
+  async ({ token, userid }) => {
+    try {
+      console.log(`Token: ${token}, User Id: ${userid}`);
+      const response = await axios.delete(
+        "http://localhost:3000/admin-dashboard/deleteuser",
+        {
+          data: { userid },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+export const deleteSellerForAdmin = createAsyncThunk(
+  "admin/deleteSellerForAdmin",
+  async ({ token, sellerid }) => {
+    try {
+      const response = await axios.delete(
+        "http://localhost:3000/admin-dashboard/deleteseller",
+        {
+          data: { sellerid },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
 const adminSlice = createSlice({
   name: "admin",
   initialState,
@@ -125,7 +170,15 @@ const adminSlice = createSlice({
 
       .addCase(deleteProduct.pending, (state, action) => {})
       .addCase(deleteProduct.fulfilled, (state, action) => {})
-      .addCase(deleteProduct.rejected, (state, action) => {});
+      .addCase(deleteProduct.rejected, (state, action) => {})
+
+      .addCase(deleteUserForAdmin.pending, (state, action) => {})
+      .addCase(deleteUserForAdmin.fulfilled, (state, action) => {})
+      .addCase(deleteUserForAdmin.rejected, (state, action) => {})
+
+      .addCase(deleteSellerForAdmin.pending, (state, action) => {})
+      .addCase(deleteSellerForAdmin.fulfilled, (state, action) => {})
+      .addCase(deleteSellerForAdmin.rejected, (state, action) => {});
   },
 });
 

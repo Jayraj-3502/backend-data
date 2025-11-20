@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteSellerForAdmin,
   getAllProductsDetails,
   getAllSellersData,
 } from "../../feature/admin.store";
@@ -8,6 +9,7 @@ import {
 export default function AdminSeller() {
   const dispatch = useDispatch();
   const { allSellers } = useSelector((state) => state.admin);
+  const { tokenDetails } = useSelector((state) => state.user);
 
   const tableHeaderText = [
     "S.No",
@@ -17,6 +19,11 @@ export default function AdminSeller() {
     "Total Revenue",
     "",
   ];
+
+  async function deleteSellerFunction(sellerid) {
+    await dispatch(deleteSellerForAdmin({ token: tokenDetails, sellerid }));
+    await dispatch(getAllSellersData());
+  }
 
   useEffect(() => {
     dispatch(getAllSellersData());
@@ -48,6 +55,9 @@ export default function AdminSeller() {
               totalProductCount={seller.totalproductofseller}
               totalSelledCount={seller.totalproductsselled}
               totalSellRevenue={seller.totalproductsselledamount}
+              onClickFunction={() => {
+                deleteSellerFunction(seller._id);
+              }}
             />
           ))}
         </tbody>
@@ -63,6 +73,7 @@ function SellerTableRow({
   totalProductCount = 0,
   totalSelledCount = 0,
   totalSellRevenue = 0,
+  onClickFunction = () => {},
 }) {
   return (
     <tr className="hover:bg-gray-50">
@@ -72,7 +83,10 @@ function SellerTableRow({
       <td className="px-6 py-4 text-sm text-gray-700">{totalSelledCount}</td>
       <td className="px-6 py-4 text-sm text-gray-700">${totalSellRevenue}</td>
       <td className="px-6 py-4 text-center">
-        <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition duration-200">
+        <button
+          onClick={onClickFunction}
+          className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition duration-200"
+        >
           Delete
         </button>
       </td>

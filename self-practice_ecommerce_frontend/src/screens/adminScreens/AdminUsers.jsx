@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteUserForAdmin,
   getAllProductsDetails,
   getAllSellersData,
   getAllUsersData,
@@ -9,12 +10,20 @@ import {
 export default function AdminUsers() {
   const dispatch = useDispatch();
   const { allUsers } = useSelector((state) => state.admin);
+  const { tokenDetails } = useSelector((state) => state.user);
 
   const tableHeaderText = ["S.No", "Name", "Orders Count", "Orders Amount", ""];
 
   useEffect(() => {
     dispatch(getAllUsersData());
   }, []);
+
+  async function deleteUserFunction(userid) {
+    console.log("token: ", tokenDetails);
+    console.log("User Id: ", userid);
+    await dispatch(deleteUserForAdmin({ token: tokenDetails, userid }));
+    await dispatch(getAllUsersData());
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -41,6 +50,9 @@ export default function AdminUsers() {
               name={user.fullname}
               totalOrderAmount={user.totalorderamount}
               totalOrders={user.totalorders}
+              onclickFunction={() => {
+                deleteUserFunction(user._id);
+              }}
             />
           ))}
         </tbody>
@@ -55,6 +67,7 @@ function UsersTableRow({
   name = "",
   totalOrderAmount = 0,
   totalOrders = 0,
+  onclickFunction = () => {},
 }) {
   return (
     <tr className="hover:bg-gray-50">
@@ -63,7 +76,10 @@ function UsersTableRow({
       <td className="px-6 py-4 text-sm text-gray-700">{totalOrders}</td>
       <td className="px-6 py-4 text-sm text-gray-700">${totalOrderAmount}</td>
       <td className="px-6 py-4 text-center">
-        <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition duration-200">
+        <button
+          onClick={onclickFunction}
+          className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition duration-200"
+        >
           Delete
         </button>
       </td>

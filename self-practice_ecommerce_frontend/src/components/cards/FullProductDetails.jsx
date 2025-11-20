@@ -12,6 +12,7 @@ export default function FullProductDetails({ id, productDetails }) {
   const { currentUser } = useSelector((state) => state.user);
 
   async function addToCardFunction() {
+    console.log("Add to Cart Function Running");
     await dispatch(
       addToCustomerCart({ userId: currentUser._id, productId: id })
     );

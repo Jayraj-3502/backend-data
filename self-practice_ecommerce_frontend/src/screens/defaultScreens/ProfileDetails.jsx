@@ -1,7 +1,21 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../feature/users.store";
+import { useState } from "react";
 
 export default function ProfileDetails() {
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  const [profilePopupIsOpen, serProfilePopupIsOpen] = useState(false);
+
+  const [userDetails, setUserDetails] = useState({
+    fullname: "",
+    phone: "",
+  });
+
+  function userDetailsEditOnSubmit(event) {
+    event.preventDefault();
+    console.log("This is Printed");
+  }
 
   return (
     <div className="min-h-screen w-full bg-gray-100 flex justify-center px-4 py-10">
@@ -23,39 +37,45 @@ export default function ProfileDetails() {
             <p className="text-gray-600 text-lg">{currentUser?.email}</p>
             <p className="text-gray-500">{currentUser?.phone}</p>
 
-            <button className="bg-blue-600 text-white px-5 py-2 rounded-lg mt-3 hover:bg-blue-700 transition">
-              Edit Profile
-            </button>
+            <div className="flex flex-row gap-2">
+              <button className="bg-blue-600 text-white px-5 py-2 rounded-lg mt-3 hover:bg-blue-700 transition">
+                Edit Profile
+              </button>
+              <button
+                onClick={() => {
+                  dispatch(logoutUser());
+                }}
+                className="bg-red-600 text-white px-5 py-2 rounded-lg mt-3 hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Stats Section */}
         <div className="grid grid-cols-3 gap-4 mb-10">
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-blue-700">
-              {currentUser?.totalorders}
-            </h3>
-            <p className="text-gray-600 text-sm">Orders Placed</p>
-          </div>
-
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-green-700">
-              ${currentUser?.totalorderamount}
-            </h3>
-            <p className="text-gray-600 text-sm">Total Spent</p>
-          </div>
-
-          <div className="bg-red-50 border border-red-200 p-4 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-red-700">
-              {currentUser?.cart.length}
-            </h3>
-            <p className="text-gray-600 text-sm">Cart Items</p>
-          </div>
+          <DataCard
+            color="blue"
+            value={currentUser?.totalorders}
+            title="Orders Placed"
+          />
+          <DataCard
+            color="green"
+            value={currentUser?.totalorderamount}
+            title="Total Spent"
+          />
+          <DataCard
+            color="red"
+            value={currentUser?.cart.length}
+            title="Cart Items"
+          />
         </div>
 
         {/* Information Section */}
         <div className="bg-gray-50 p-6 rounded-xl shadow-inner space-y-4">
           <h3 className="text-xl font-semibold text-gray-700">Addresses</h3>
+          <button>Add Address</button>
 
           <div className="grid md:grid-cols-2 gap-4">
             <InfoSectionCard title={"Full Name"} description={"Amit Sharma"} />
@@ -72,5 +92,65 @@ function InfoSectionCard({ title, description }) {
       <p className="text-gray-500 text-sm">{title}</p>
       <p className="text-gray-800 font-medium">{description}</p>
     </div>
+  );
+}
+
+function DataCard({ color = "", value = "", title = "" }) {
+  return (
+    <div
+      className={`bg-${color}-50 border border-${color}-200 p-4 rounded-lg text-center`}
+    >
+      <h3 className={`text-2xl font-bold text-${color}-700`}>{value}</h3>
+      <p className="text-gray-600 text-sm">{title}</p>
+    </div>
+  );
+}
+
+function UserDetailsEditPopup({}) {
+  return (
+    <Popup
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      title="Edit Profile"
+    >
+      <form action="" onSubmit={onSubmitAction}>
+        <InputFieldSecond
+          label="Full Name"
+          name="fullname"
+          type="text"
+          defaultValue={updateDetails.fullname}
+          placeholderText="Enter Full Name"
+          required={false}
+          disable={false}
+          updaterFunction={(event) => {
+            setUpdateDetails((prev) => ({
+              ...prev,
+              fullname: event.target.value,
+            }));
+          }}
+        />
+        <InputFieldSecond
+          label="Phone"
+          name="phone"
+          type="text"
+          defaultValue={updateDetails.phone}
+          placeholderText="Enter Phone Number"
+          required={false}
+          disable={false}
+          updaterFunction={(event) => {
+            setUpdateDetails((prev) => ({
+              ...prev,
+              phone: event.target.value,
+            }));
+          }}
+        />
+        <button
+          type="submit"
+          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
+        >
+          Update
+        </button>
+      </form>
+    </Popup>
   );
 }

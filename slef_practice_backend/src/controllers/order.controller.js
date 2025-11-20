@@ -7,7 +7,7 @@ import ApiResponce from "../utils/ApiResponce.js";
 export async function addOrder(req, res) {
   try {
     const logginUser = req.user;
-    const { productId, quantity, total } = req.body;
+    const { productId, quantity, subtotal, total } = req.body;
 
     const userDetail = await User.findById(logginUser.id);
     if (!userDetail)
@@ -25,65 +25,54 @@ export async function addOrder(req, res) {
         detailMessage: "Product Not Found",
       });
 
-    if (productDetails.quantity < quantity)
+    if (productDetails.stock < quantity)
       return ApiError({
         res,
         statusCode: 400,
-        detailMessage: "Product quantity is less then you added.",
+        detailMessage: "Not enough stock",
       });
 
     const newOrder = await Order.create({
       user: userDetail._id,
       sellerid: productDetails.sellerid,
-      products: {
-        product: productId,
-        quantity: quantity,
-        price: productDetails.price,
-      },
-      totalamount: quantity * productDetails.price,
-      orderdate: Date.now(),
+      products: [
+        {
+          product: productId,
+          quantity,
+          price: productDetails.price,
+        },
+      ],
+      totalamount: total,
+      orderdate: new Date(),
       status: "processing",
+      shippingaddress: {},
     });
 
-    await Product.findByIdAndUpdate(
-      productDetails._id,
-      { $set: { stock: productDetails.stock - quantity } },
-      { new: true, runValidators: true }
-    );
-
-    const totalorders = +userDetail.totalorders + +quantity;
-    const totalorderamount = +userDetail.totalorderamount + +total;
-
-    await User.findByIdAndUpdate(
-      logginUser.id,
-      {
-        $set: {
-          totalorders: parseFloat(totalorders.toFixed(2)),
-          totalorderamount: parseFloat(totalorderamount.toFixed(2)),
-        },
+    // Update product stock
+    await Product.findByIdAndUpdate(productDetails._id, {
+      $inc: {
+        stock: -+quantity,
+        totalSelled: +(+quantity),
       },
-      { new: true, runValidators: true }
-    );
+    });
 
+    // Update buyer stats
+    await User.findByIdAndUpdate(logginUser.id, {
+      $inc: {
+        totalorders: +1,
+        totalorderamount: +total,
+      },
+    });
+
+    // Update seller stats
     const sellerDetails = await User.findById(productDetails.sellerid);
 
-    const totalproductsselled = +sellerDetails.totalproductsselled + +quantity;
-    const totalproductsselledamount =
-      +sellerDetails.totalproductsselledamount +
-      +productDetails.price * +quantity;
-
-    await User.findByIdAndUpdate(
-      sellerDetails._id,
-      {
-        $set: {
-          totalproductsselled: parseFloat(totalproductsselled.toFixed(2)),
-          totalproductsselledamount: parseFloat(
-            totalproductsselledamount.toFixed(2)
-          ),
-        },
+    await User.findByIdAndUpdate(sellerDetails._id, {
+      $inc: {
+        totalproductsselled: +(+quantity),
+        totalproductsselledamount: +(+subtotal),
       },
-      { new: true, runValidators: true }
-    );
+    });
 
     ApiResponce({
       res,
@@ -92,14 +81,13 @@ export async function addOrder(req, res) {
       responceData: newOrder,
     });
   } catch (err) {
-    ApiError({ res, statusCode: 500, detailMessage: err });
+    ApiError({ res, statusCode: 500, detailMessage: err.message });
   }
 }
 
 export async function getOrdersForUser(req, res) {
   try {
     const logginUser = req.user;
-    console.log(logginUser);
     if (logginUser.role != "user")
       return ApiError({
         res,
@@ -132,10 +120,12 @@ export async function getOrdersForUser(req, res) {
 // This function is to get data of orders filter by the seller ID
 export async function getOrdersForSeller(req, res) {
   try {
-    const { id } = req.params.id;
-    console.log(id);
+    const logginUser = req.user;
+    console.log(logginUser);
 
-    const allOrders = await Order.find({ sellerid: id });
+    const allOrders = await Order.find({ sellerid: logginUser.id })
+      .populate("user", "fullname")
+      .populate("products.product", "name");
 
     if (!allOrders)
       return ApiError({
@@ -191,6 +181,8 @@ export async function updateOrderStatus(req, res) {
   try {
     const logginUser = req.user;
     const { orderid, status } = req.body;
+
+    console.log(orderid, status);
 
     if (logginUser.role === "user")
       return ApiError({

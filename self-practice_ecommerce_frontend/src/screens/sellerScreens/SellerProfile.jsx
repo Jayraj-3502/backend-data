@@ -3,6 +3,7 @@ import { Popup } from "../../components/componentsExport";
 import { useEffect, useState } from "react";
 import InputFieldSecond from "../../components/inputs/InputFieldSecond";
 import {
+  logoutUser,
   tokenVerfication,
   updateSellerProfileDetails,
 } from "../../feature/users.store";
@@ -33,6 +34,10 @@ export default function SellerProfile() {
     await dispatch(tokenVerfication());
     setIsOpen(false);
   }
+
+  useEffect(() => {
+    dispatch(tokenVerfication());
+  }, []);
 
   useEffect(() => {
     console.log(currentUser);
@@ -72,6 +77,14 @@ export default function SellerProfile() {
           className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
         >
           Edit Profile
+        </button>
+        <button
+          onClick={() => {
+            dispatch(logoutUser());
+          }}
+          className="w-full bg-red-600 text-white px-5 py-2 rounded-lg mt-3 hover:bg-red-700 transition"
+        >
+          Logout
         </button>
 
         <Popup

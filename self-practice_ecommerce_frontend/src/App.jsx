@@ -29,6 +29,7 @@ import { getToken, tokenVerfication } from "./feature/users.store.js";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import AuthProtectedRoute from "./routes/AuthProtectedRoute.jsx";
 import OrderScreen from "./screens/defaultScreens/OrderScreen.jsx";
+import AdminProfile from "./screens/adminScreens/AdminProfile.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ function App() {
               <Route path="orders" element={<AdminOrders />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="sellers" element={<AdminSellers />} />
-              <Route path="profile" element={<SellerProfile />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
             <Route
               path="seller-dashboard"

@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 const initialState = {
   allProducts: [],
   allOrders: [],
+  totalFilters: {},
+  deliveryStatus: {},
 };
 
 export const getAllSellerProducts = createAsyncThunk(
@@ -49,14 +51,90 @@ export const updateProductForSeller = createAsyncThunk(
 
 export const getAllOrdersForSeller = createAsyncThunk(
   "seller/getAllOrdersForSeller",
-  async ({ id }) => {
+  async (token) => {
     try {
+      console.log("Seller order fetching");
       const response = await axios.get(
-        `http://localhost:3000/order/sellerorders/${id}`
+        "http://localhost:3000/order/sellerorders",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       console.log(response.data);
+      return response.data;
     } catch (err) {
-      toast.error(err);
+      console.log(err);
+    }
+  }
+);
+
+export const updateOrderStatusForSeller = createAsyncThunk(
+  "seller/updateOrderStatusForSeller",
+  async ({ token, orderid, status }) => {
+    try {
+      console.log(orderid, status);
+      const response = await axios.put(
+        "http://localhost:3000/order/update",
+        {
+          orderid,
+          status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+export const getTotalFilterForSeller = createAsyncThunk(
+  "seller/",
+  async (token) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/seller-dashboard/totalstock",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+export const getDeliveryStatusForSeller = createAsyncThunk(
+  "seller/getDeliveryStatusForSeller",
+  async (token) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/seller-dashboard/deliverystatus",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
     }
   }
 );
@@ -84,7 +162,25 @@ const sellerSlice = createSlice({
         state.allOrders = action.payload?.data?.responceData || [];
         console.log("This is done");
       })
-      .addCase(getAllOrdersForSeller.rejected, (state, action) => {});
+      .addCase(getAllOrdersForSeller.rejected, (state, action) => {})
+
+      .addCase(getTotalFilterForSeller.pending, (state, action) => {})
+      .addCase(getTotalFilterForSeller.fulfilled, (state, action) => {
+        state.totalFilters = action.payload?.data?.responceData || {};
+        console.log("This is done");
+      })
+      .addCase(getTotalFilterForSeller.rejected, (state, action) => {})
+
+      .addCase(getDeliveryStatusForSeller.pending, (state, action) => {})
+      .addCase(getDeliveryStatusForSeller.fulfilled, (state, action) => {
+        state.deliveryStatus = action.payload?.data?.responceData || {};
+        console.log("This is done");
+      })
+      .addCase(getDeliveryStatusForSeller.rejected, (state, action) => {})
+
+      .addCase(updateOrderStatusForSeller.pending, (state, action) => {})
+      .addCase(updateOrderStatusForSeller.fulfilled, (state, action) => {})
+      .addCase(updateOrderStatusForSeller.rejected, (state, action) => {});
   },
 });
 

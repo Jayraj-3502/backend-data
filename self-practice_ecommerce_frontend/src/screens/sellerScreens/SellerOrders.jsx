@@ -1,12 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersDetails } from "../../feature/admin.store";
-import { getAllOrdersForSeller } from "../../feature/seller.store";
-import { useEffect } from "react";
+import {
+  getAllOrdersForSeller,
+  updateOrderStatusForSeller,
+} from "../../feature/seller.store";
+import { useEffect, useState } from "react";
+import { Dropdown } from "../../components/componentsExport";
 
 export default function SellerOrders() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
-  const { allOrders } = useSelector((state) => state.admin);
+  const { currentUser, tokenDetails } = useSelector((state) => state.user);
+  const { allOrders } = useSelector((state) => state.seller);
+
+  async function updateOrderStatus(orderid, status) {
+    await dispatch(
+      updateOrderStatusForSeller({ token: tokenDetails, orderid, status })
+    );
+    await dispatch(getAllOrdersForSeller(tokenDetails));
+  }
 
   const tableHeaderText = [
     "S.No",
@@ -19,7 +29,7 @@ export default function SellerOrders() {
 
   useEffect(() => {
     console.log("Getting Orders");
-    dispatch(getAllOrdersForSeller({ id: currentUser._id }));
+    dispatch(getAllOrdersForSeller(tokenDetails));
   }, [currentUser]);
 
   return (
@@ -39,17 +49,22 @@ export default function SellerOrders() {
         </thead>
 
         <tbody className="divide-y divide-gray-200">
-          {allOrders.map((order, index) => (
-            <SellerOrdersTableRow
-              key={order._id}
-              sno={index + 1}
-              id={order._id}
-              name={order.user.fullname}
-              totalAmount={order.totalamount}
-              quantity={order.products[0].quantity}
-              product={order.products[0].product.name}
-            />
-          ))}
+          {allOrders &&
+            allOrders.map((order, index) => (
+              <SellerOrdersTableRow
+                key={order._id}
+                sno={index + 1}
+                id={order._id}
+                name={order.user.fullname}
+                totalAmount={order.totalamount}
+                quantity={order.products[0].quantity}
+                product={order.products[0].product.name}
+                status={order.status}
+                updateFunction={(event) => {
+                  updateOrderStatus(order._id, event.target.value);
+                }}
+              />
+            ))}
         </tbody>
       </table>
     </div>
@@ -63,8 +78,10 @@ function SellerOrdersTableRow({
   product = "",
   quantity = "",
   totalAmount = "",
+  status = "pending",
+  updateFunction = () => {},
 }) {
-  const [deliveryStatus, setDeliveryStatus] = useState("pending");
+  const [deliveryStatus, setDeliveryStatus] = useState(status);
   const deliveryValues = [
     "pending",
     "processing",
@@ -88,6 +105,7 @@ function SellerOrdersTableRow({
           defaultValue={deliveryStatus}
           required={false}
           values={deliveryValues}
+          updaterFunction={updateFunction}
           style={
             "bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg outline-none"
           }

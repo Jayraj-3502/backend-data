@@ -2,10 +2,19 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersDetails } from "../../feature/admin.store";
 import { Dropdown } from "../../components/componentsExport";
+import { updateOrderStatusForSeller } from "../../feature/seller.store";
 
 export default function AdminOrders() {
   const dispatch = useDispatch();
+  const { currentUser, tokenDetails } = useSelector((state) => state.user);
   const { allOrders } = useSelector((state) => state.admin);
+
+  async function updateOrderStatus(orderid, status) {
+    await dispatch(
+      updateOrderStatusForSeller({ token: tokenDetails, orderid, status })
+    );
+    await dispatch(getAllOrdersDetails());
+  }
 
   const tableHeaderText = [
     "S.No",
@@ -45,7 +54,11 @@ export default function AdminOrders() {
               name={order.user.fullname}
               totalAmount={order.totalamount}
               quantity={order.products[0].quantity}
+              status={order.status}
               product={order.products[0].product.name}
+              updateFunction={(event) => {
+                updateOrderStatus(order._id, event.target.value);
+              }}
             />
           ))}
         </tbody>
@@ -60,9 +73,11 @@ function UsersTableRow({
   name = "",
   product = "",
   quantity = "",
+  status = "pending",
   totalAmount = "",
+  updateFunction = () => {},
 }) {
-  const [deliveryStatus, setDeliveryStatus] = useState("pending");
+  const [deliveryStatus, setDeliveryStatus] = useState(status);
   const deliveryValues = [
     "pending",
     "processing",
@@ -86,6 +101,7 @@ function UsersTableRow({
           defaultValue={deliveryStatus}
           required={false}
           values={deliveryValues}
+          updaterFunction={updateFunction}
           style={
             "bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg outline-none"
           }

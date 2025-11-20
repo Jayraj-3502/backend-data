@@ -104,6 +104,7 @@ export async function getAllUsersData(req, res) {
     }
 
     const users = await User.find();
+
     ApiResponce({
       res,
       statusCode: 200,

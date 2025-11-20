@@ -129,7 +129,7 @@ export async function deleteProductById(req, res) {
       return ApiError({
         res,
         statusCode: 404,
-        detailMessage: "Product not found",
+        detailMessage: "Seller not found",
       });
     }
 
@@ -137,7 +137,7 @@ export async function deleteProductById(req, res) {
       res,
       statusCode: 200,
       activityType: "Delete",
-      responceData: productExist,
+      responceData: productDetails,
     });
   } catch (err) {
     ApiError({ res, statusCode: 500, detailMessage: err });

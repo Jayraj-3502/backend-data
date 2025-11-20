@@ -64,7 +64,7 @@ const orderSlice = createSlice({
 
       .addCase(getCustomerOrders.pending, (state, action) => {})
       .addCase(getCustomerOrders.fulfilled, (state, action) => {
-        state.customerAllOrders = action.payload?.data?.responseData;
+        state.customerAllOrders = action.payload?.data?.responceData;
         console.log(state.customerAllOrders);
       })
       .addCase(getCustomerOrders.rejected, (state, action) => {});
