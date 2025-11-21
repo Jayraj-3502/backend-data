@@ -21,19 +21,19 @@ export async function registerNewUser(req, res) {
       });
     }
 
-    const emailSend = await MailService({
-      res,
-      recieverEmail: email,
-      subject: "Registration Verification",
-      emailType: "Registration Verification",
-    });
+    // const emailSend = await MailService({
+    //   res,
+    //   recieverEmail: email,
+    //   subject: "Registration Verification",
+    //   emailType: "Registration Verification",
+    // });
 
-    if (!emailSend)
-      return ApiError({
-        res,
-        statusCode: 500,
-        detailMessage: "Something went wrong",
-      });
+    // if (!emailSend)
+    //   return ApiError({
+    //     res,
+    //     statusCode: 500,
+    //     detailMessage: "Something went wrong",
+    //   });
 
     ApiResponce({
       res,
@@ -258,19 +258,19 @@ export async function passwordForgotOtp(req, res) {
       });
     }
 
-    const emailSend = await MailService({
-      res,
-      recieverEmail: email,
-      subject: "Forgot Password Verification",
-      emailType: "Forgot Password Verification",
-    });
+    // const emailSend = await MailService({
+    //   res,
+    //   recieverEmail: email,
+    //   subject: "Forgot Password Verification",
+    //   emailType: "Forgot Password Verification",
+    // });
 
-    if (!emailSend)
-      return ApiError({
-        res,
-        statusCode: 500,
-        detailMessage: "Something went wrong",
-      });
+    // if (!emailSend)
+    //   return ApiError({
+    //     res,
+    //     statusCode: 500,
+    //     detailMessage: "Something went wrong",
+    //   });
 
     ApiResponce({
       res,

@@ -38,6 +38,8 @@ export default function SignupScreen() {
 
     const result = await dispatch(registerUser({ email: inputDetails.email }));
 
+    console.log(result);
+
     if (result.payload.success) {
       setOtpPopup(true);
       toast.success("OTP has been sended");
