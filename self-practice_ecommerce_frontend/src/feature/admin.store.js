@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseURL } from "../constant";
 
 const initialState = {
   allUsers: [],
@@ -13,9 +14,7 @@ export const getAllUsersData = createAsyncThunk(
   "admin/getAllUsersData",
   async () => {
     console.log("this");
-    const responce = await axios.get(
-      "http://localhost:3000/admin-dashboard/users"
-    );
+    const responce = await axios.get(`${baseURL}/admin-dashboard/users`);
 
     console.log(responce.data);
     return responce.data;
@@ -26,9 +25,7 @@ export const getAllSellersData = createAsyncThunk(
   "admin/getAllSellersData",
   async () => {
     console.log("This");
-    const responce = await axios.get(
-      "http://localhost:3000/admin-dashboard/seller"
-    );
+    const responce = await axios.get(`${baseURL}/admin-dashboard/seller`);
 
     console.log(responce.data);
     return responce.data;
@@ -39,9 +36,7 @@ export const getAllProductsDetails = createAsyncThunk(
   "admin/getAllProductsDetails",
   async () => {
     console.log("This");
-    const response = await axios.get(
-      "http://localhost:3000/admin-dashboard/allproducts"
-    );
+    const response = await axios.get(`${baseURL}/admin-dashboard/allproducts`);
     console.log(response.data);
     return response.data;
   }
@@ -51,9 +46,7 @@ export const getAllOrdersDetails = createAsyncThunk(
   "admin/getAllOrdersDetails",
   async () => {
     console.log("This");
-    const response = await axios.get(
-      "http://localhost:3000/admin-dashboard/allorders"
-    );
+    const response = await axios.get(`${baseURL}/admin-dashboard/allorders`);
     console.log(response.data);
     return response.data;
   }
@@ -63,9 +56,7 @@ export const getFilterDetails = createAsyncThunk(
   "admin/getFilterDetails",
   async () => {
     console.log("This filter");
-    const response = await axios.get(
-      "http://localhost:3000/admin-dashboard/allfilter"
-    );
+    const response = await axios.get(`${baseURL}/admin-dashboard/allfilter`);
 
     console.log(response.data);
     return response.data;
@@ -76,7 +67,7 @@ export const deleteProduct = createAsyncThunk(
   "admin/deleteProduct",
   async (id) => {
     console.log(id);
-    const response = await axios.delete(`http://localhost:3000/products/${id}`);
+    const response = await axios.delete(`${baseURL}/products/${id}`);
     console.log(response.data);
     return response.data;
   }
@@ -88,7 +79,7 @@ export const deleteUserForAdmin = createAsyncThunk(
     try {
       console.log(`Token: ${token}, User Id: ${userid}`);
       const response = await axios.delete(
-        "http://localhost:3000/admin-dashboard/deleteuser",
+        `${baseURL}/admin-dashboard/deleteuser`,
         {
           data: { userid },
           headers: {
@@ -110,7 +101,7 @@ export const deleteSellerForAdmin = createAsyncThunk(
   async ({ token, sellerid }) => {
     try {
       const response = await axios.delete(
-        "http://localhost:3000/admin-dashboard/deleteseller",
+        `${baseURL}/admin-dashboard/deleteseller`,
         {
           data: { sellerid },
           headers: {

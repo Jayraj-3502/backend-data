@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseURL } from "../constant";
 
 const initialState = {
   allOrders: [],
@@ -11,15 +12,12 @@ export const getCustomerOrders = createAsyncThunk(
   async (token) => {
     try {
       console.log(token);
-      const response = await axios.get(
-        "http://localhost:3000/order/userorders",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`${baseURL}/order/userorders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       console.log(response.data);
       return response.data;
     } catch (err) {
@@ -33,7 +31,7 @@ export const addToCustomerCart = createAsyncThunk(
   async ({ userId, productId }) => {
     try {
       console.log(userId, productId);
-      const response = await axios.post("http://localhost:3000/cart/add", {
+      const response = await axios.post(`${baseURL}/cart/add`, {
         userId,
         productId,
       });
@@ -50,7 +48,7 @@ export const removeToCustomerCart = createAsyncThunk(
   async ({ token, productId }) => {
     try {
       console.log(productId);
-      const response = await axios.delete("http://localhost:3000/cart/delete", {
+      const response = await axios.delete(`${baseURL}/cart/delete"`, {
         data: {
           productId,
         },
@@ -71,7 +69,7 @@ export const getCustomerCartData = createAsyncThunk(
   "customer/getCustomerCartData",
   async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3000/cart/${id}`);
+      const response = await axios.get(`${baseURL}/cart/${id}`);
       console.log(response.data);
       return response.data;
     } catch (err) {

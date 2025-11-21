@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { baseURL } from "../constant";
 
 const initialState = {
   customerAllOrders: [],
@@ -20,7 +21,7 @@ export const addCustomerOrder = createAsyncThunk(
   }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/order/add",
+        `${baseURL}/order/add`,
         {
           productId,
           quantity,
@@ -49,15 +50,12 @@ export const getCustomerOrders = createAsyncThunk(
   "order/getCustomerOrders",
   async (token) => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/order/userorders",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`${baseURL}/order/userorders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       console.log(response.data);
       return response.data;
     } catch (err) {

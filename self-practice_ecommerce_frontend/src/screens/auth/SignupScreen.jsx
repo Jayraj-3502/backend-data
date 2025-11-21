@@ -11,6 +11,7 @@ import OTPInput from "./OTPInput";
 import InputFieldSecond from "../../components/inputs/InputFieldSecond";
 import DropdownSecond from "../../components/inputs/DropdownSecond";
 import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../feature/users.store";
 
 export default function SignupScreen() {
   const dispatch = useDispatch();
@@ -35,11 +36,9 @@ export default function SignupScreen() {
       return;
     }
 
-    const response = await axios.post("http://localhost:3000/register", {
-      email: inputDetails.email,
-    });
+    const result = await dispatch(registerUser({ email: inputDetails.email }));
 
-    if (response.data.success) {
+    if (result.payload.success) {
       setOtpPopup(true);
       toast.success("OTP has been sended");
     } else {

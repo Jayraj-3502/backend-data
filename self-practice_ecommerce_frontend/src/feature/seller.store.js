@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { baseURL } from "../constant";
 
 const initialState = {
   allProducts: [],
@@ -13,7 +14,7 @@ export const getAllSellerProducts = createAsyncThunk(
   "seller/getAllSellerProducts",
   async (sellerId) => {
     const response = await axios.post(
-      "http://localhost:3000/seller-dashboard/products",
+      `${baseURL}/seller-dashboard/products`,
       sellerId
     );
 
@@ -30,10 +31,7 @@ export const getAllSellerProducts = createAsyncThunk(
 export const addProductForSeller = createAsyncThunk(
   "seller/addProductForSeller",
   async (productData) => {
-    const response = await axios.post(
-      "http://localhost:3000/products",
-      productData
-    );
+    const response = await axios.post(`${baseURL}/products`, productData);
     console.log(response.data);
   }
 );
@@ -42,7 +40,7 @@ export const updateProductForSeller = createAsyncThunk(
   "seller/updateProductForSeller",
   async (productData) => {
     const response = await axios.put(
-      `http://localhost:3000/products/${productData._id}`,
+      `${baseURL}/products/${productData._id}`,
       productData
     );
     console.log(response.data);
@@ -54,15 +52,12 @@ export const getAllOrdersForSeller = createAsyncThunk(
   async (token) => {
     try {
       console.log("Seller order fetching");
-      const response = await axios.get(
-        "http://localhost:3000/order/sellerorders",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`${baseURL}/order/sellerorders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       console.log(response.data);
       return response.data;
     } catch (err) {
@@ -77,7 +72,7 @@ export const updateOrderStatusForSeller = createAsyncThunk(
     try {
       console.log(orderid, status);
       const response = await axios.put(
-        "http://localhost:3000/order/update",
+        `${baseURL}/order/update`,
         {
           orderid,
           status,
@@ -102,7 +97,7 @@ export const getTotalFilterForSeller = createAsyncThunk(
   async (token) => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/seller-dashboard/totalstock",
+        `${baseURL}/seller-dashboard/totalstock`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -123,7 +118,7 @@ export const getDeliveryStatusForSeller = createAsyncThunk(
   async (token) => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/seller-dashboard/deliverystatus",
+        `${baseURL}/seller-dashboard/deliverystatus`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

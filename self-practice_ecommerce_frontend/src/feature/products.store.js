@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { baseURL } from "../constant";
 
 const initialState = {
   allProducts: [],
@@ -10,7 +11,7 @@ const initialState = {
 export const getAllProductsData = createAsyncThunk(
   "product/getAllProductsData",
   async () => {
-    const response = await axios.get("http://localhost:3000/products");
+    const response = await axios.get(`${baseURL}/products`);
 
     if (!response.data.success) {
       toast.error("Data not fetched!");
@@ -25,7 +26,7 @@ export const getAllProductsData = createAsyncThunk(
 export const getCurrentProductDetails = createAsyncThunk(
   "product/getCurrentProductDetails",
   async (id) => {
-    const response = await axios.get(`http://localhost:3000/products/${id}`);
+    const response = await axios.get(`${baseURL}/products/${id}`);
 
     if (!response.data.success) {
       toast.error("Data not fetched!");
@@ -41,7 +42,7 @@ export const deleteProductByID = createAsyncThunk(
   "product/deleteProductByID",
   async (id) => {
     console.log(id);
-    const response = await axios.delete(`http://localhost:3000/products/${id}`);
+    const response = await axios.delete(`${baseURL}/products/${id}`);
     console.log(response.data);
     return response.data;
   }

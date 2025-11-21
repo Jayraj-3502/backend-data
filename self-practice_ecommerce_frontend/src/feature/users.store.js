@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { set } from "mongoose";
 import { toast } from "react-toastify";
+import { baseURL } from "../constant";
 
 const initialState = {
   currentUser: {},
@@ -12,23 +13,29 @@ const initialState = {
 
 export const registerUser = createAsyncThunk(
   "user/registerUser",
-  async (email) => {
-    const response = await axios.post("http://localhost:3000/register", {
+  async ({ email }) => {
+    console.log(email);
+    const response = await axios.post(`${baseURL}/register`, {
       email,
     });
-    if (!response.success) return toast.error(response.error.detailMessage);
+    if (!response.data.success)
+      return toast.error(response.error.detailMessage);
     toast.success("OTP Sended");
-    return response;
+    return response.data;
   }
 );
 
 export const getOtpVerification = createAsyncThunk(
   "user/getOtpVerification",
   async (data) => {
-    const response = await axios.post("http://localhost:3000/otp", data);
-    if (!response.success) return toast.error(response.error.detailMessage);
-    toast.success("User Verified");
-    return response.data;
+    console.log(data);
+    const response = await axios.post(`${baseURL}/otp`, data);
+    console.log(response.data);
+    // if (!response.success) return toast.error(response.error.detailMessage);
+    if (response.data.success) {
+      toast.success("User Verified");
+      return response.data;
+    }
   }
 );
 
@@ -36,7 +43,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (details, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:3000/login", details);
+      const response = await axios.post(`${baseURL}/login`, details);
       const data = response.data;
 
       if (!data.success) {
@@ -59,7 +66,7 @@ export const loginUser = createAsyncThunk(
 export const forgotPassword = createAsyncThunk(
   "user/forgotPassword",
   async (email) => {
-    const response = await axios.post("http://localhost:3000/forgotpassword", {
+    const response = await axios.post(`${baseURL}/forgotpassword`, {
       email,
     });
     // console.log(response.data);
@@ -74,13 +81,10 @@ export const forgotPassword = createAsyncThunk(
 export const forgotPasswordOtpVerification = createAsyncThunk(
   "user/forgotPasswordOtpVerification",
   async ({ email, otp }) => {
-    const response = await axios.post(
-      "http://localhost:3000/verificationforgotpassword",
-      {
-        email,
-        otp,
-      }
-    );
+    const response = await axios.post(`${baseURL}/verificationforgotpassword`, {
+      email,
+      otp,
+    });
     // console.log(response.data);
     if (!response.data?.success)
       return toast.error(response.data?.detailMessage);
@@ -94,7 +98,7 @@ export const updatePassword = createAsyncThunk(
   "user/updatePassword",
   async ({ email, password }) => {
     // console.log(email, password);
-    const response = await axios.post("http://localhost:3000/resetPassword", {
+    const response = await axios.post(`${baseURL}/resetPassword`, {
       email,
       password,
     });
@@ -112,7 +116,7 @@ export const updateProfileDetails = createAsyncThunk(
   async ({ token, fullname, phone }) => {
     // console.log(token, fullname, phone);
     const response = await axios.put(
-      `http://localhost:3000/update`,
+      `${baseURL}/update`,
       {
         fullname,
         phone,
@@ -142,10 +146,9 @@ export const tokenVerfication = createAsyncThunk(
     // console.log(token);
     if (!token) return null;
     try {
-      const response = await axios.post(
-        "http://localhost:3000/tokenverification",
-        { token: token }
-      );
+      const response = await axios.post(`${baseURL}/tokenverification`, {
+        token: token,
+      });
       // console.log(response.data);
       return { token, data: response?.data };
     } catch (err) {

@@ -16,6 +16,7 @@ export default function OTPInput({ data }) {
     setVerifyEnable(true);
     data.otp = otp;
     const response = await dispatch(getOtpVerification(data));
+    console.log(response);
     if (response.payload.success) {
       navigate("/login");
     } else {
