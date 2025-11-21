@@ -17,6 +17,7 @@ export default function FullProductDetails({ id, productDetails }) {
       addToCustomerCart({ userId: currentUser._id, productId: id })
     );
     await dispatch(tokenVerfication());
+    navigate("/dashboard/profile/cart");
   }
 
   return (

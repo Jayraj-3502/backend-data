@@ -7,7 +7,8 @@ import ApiResponce from "../utils/ApiResponce.js";
 export async function addOrder(req, res) {
   try {
     const logginUser = req.user;
-    const { productId, quantity, subtotal, total } = req.body;
+    const { productId, quantity, subtotal, total, address, paymenttype } =
+      req.body;
 
     const userDetail = await User.findById(logginUser.id);
     if (!userDetail)
@@ -44,8 +45,15 @@ export async function addOrder(req, res) {
       ],
       totalamount: total,
       orderdate: new Date(),
-      status: "processing",
-      shippingaddress: {},
+      status: "pending",
+      paymenttype,
+      shippingaddress: {
+        street: address.street,
+        city: address.city,
+        state: address.state,
+        zipcode: address.zipcode,
+        country: address.country,
+      },
     });
 
     // Update product stock
@@ -73,6 +81,16 @@ export async function addOrder(req, res) {
         totalproductsselledamount: +(+subtotal),
       },
     });
+
+    const itemIndex = userDetail.cart.findIndex(
+      (item) => item.product.toString() === productId
+    );
+
+    userDetail.cart = userDetail.cart
+      .slice(0, itemIndex)
+      .concat(userDetail.cart.slice(itemIndex + 1));
+
+    await userDetail.save();
 
     ApiResponce({
       res,

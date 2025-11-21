@@ -7,16 +7,17 @@ const initialState = {
   currentUser: {},
   userExist: false,
   tokenDetails: "",
+  forgotemail: "",
 };
 
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (email) => {
-    console.log("user regestration start");
     const response = await axios.post("http://localhost:3000/register", {
       email,
     });
     if (!response.success) return toast.error(response.error.detailMessage);
+    toast.success("OTP Sended");
     return response;
   }
 );
@@ -24,38 +25,112 @@ export const registerUser = createAsyncThunk(
 export const getOtpVerification = createAsyncThunk(
   "user/getOtpVerification",
   async (data) => {
-    console.log("This is running");
-    console.log(data);
     const response = await axios.post("http://localhost:3000/otp", data);
-    console.log(response.data);
+    if (!response.success) return toast.error(response.error.detailMessage);
+    toast.success("User Verified");
     return response.data;
   }
 );
 
-export const loginUser = createAsyncThunk("user/loginUser", async (details) => {
-  console.log("user login start");
-  const response = await axios.post("http://localhost:3000/login", details);
-  const data = response.data;
-  console.log(data);
-  if (!data.success) return toast.error(data.error.detailMessage);
-  return data;
-});
+export const loginUser = createAsyncThunk(
+  "user/loginUser",
+  async (details, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/login", details);
+      const data = response.data;
 
-export const updateSellerProfileDetails = createAsyncThunk(
-  "user/updateSellerProfileDetails",
-  async ({ id, fullname, phone }) => {
-    console.log(id, fullname, phone);
-    const response = await axios.put(`http://localhost:3000/user/${id}`, {
-      fullname,
-      phone,
+      if (!data.success) {
+        toast.error(data.error?.detailMessage || "Login failed");
+        return rejectWithValue(data);
+      }
+
+      toast.success("Logged in successfully");
+      return data;
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.error?.detailMessage || "Something went wrong"
+      );
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  "user/forgotPassword",
+  async (email) => {
+    const response = await axios.post("http://localhost:3000/forgotpassword", {
+      email,
     });
+    // console.log(response.data);
+    if (!response.data?.success)
+      return toast.error(response.data?.detailMessage);
+
+    toast.success("OTP sended");
+    return { data: response.data, email };
+  }
+);
+
+export const forgotPasswordOtpVerification = createAsyncThunk(
+  "user/forgotPasswordOtpVerification",
+  async ({ email, otp }) => {
+    const response = await axios.post(
+      "http://localhost:3000/verificationforgotpassword",
+      {
+        email,
+        otp,
+      }
+    );
+    // console.log(response.data);
+    if (!response.data?.success)
+      return toast.error(response.data?.detailMessage);
+
+    toast.success("OTP verification complete");
+    return response.data;
+  }
+);
+
+export const updatePassword = createAsyncThunk(
+  "user/updatePassword",
+  async ({ email, password }) => {
+    // console.log(email, password);
+    const response = await axios.post("http://localhost:3000/resetPassword", {
+      email,
+      password,
+    });
+    // console.log(response.data);
+    if (!response.data?.success)
+      return toast.error(response.data?.detailMessage);
+
+    toast.success("Password Updated");
+    return response.data;
+  }
+);
+
+export const updateProfileDetails = createAsyncThunk(
+  "user/updateProfileDetails",
+  async ({ token, fullname, phone }) => {
+    // console.log(token, fullname, phone);
+    const response = await axios.put(
+      `http://localhost:3000/update`,
+      {
+        fullname,
+        phone,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.data.success) {
       toast.error("Something went wrong");
       return [];
     }
 
-    toast.success("Update Successfull");
+    toast.success("Profile detaild Update");
     return response.data;
   }
 );
@@ -64,17 +139,17 @@ export const tokenVerfication = createAsyncThunk(
   "user/tokenVerfication",
   async () => {
     const token = getFromLocalStorage();
-    console.log(token);
+    // console.log(token);
     if (!token) return null;
     try {
       const response = await axios.post(
         "http://localhost:3000/tokenverification",
         { token: token }
       );
-      console.log(response.data);
+      // console.log(response.data);
       return { token, data: response?.data };
     } catch (err) {
-      toast.error("Something Went Wrong Please Login Again");
+      toast.error(err);
       return "";
     }
   }
@@ -141,9 +216,24 @@ export const userSlice = createSlice({
         console.log(action.payload);
       })
 
-      .addCase(updateSellerProfileDetails.pending, (state, action) => {})
-      .addCase(updateSellerProfileDetails.fulfilled, (state, action) => {})
-      .addCase(updateSellerProfileDetails.rejected, (state, action) => {});
+      .addCase(updateProfileDetails.pending, (state, action) => {})
+      .addCase(updateProfileDetails.fulfilled, (state, action) => {})
+      .addCase(updateProfileDetails.rejected, (state, action) => {})
+
+      .addCase(forgotPassword.pending, (state, action) => {})
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.forgotemail = action.payload.email;
+        console.log(state.forgotemail);
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {})
+
+      .addCase(forgotPasswordOtpVerification.pending, (state, action) => {})
+      .addCase(forgotPasswordOtpVerification.fulfilled, (state, action) => {})
+      .addCase(forgotPasswordOtpVerification.rejected, (state, action) => {})
+
+      .addCase(updatePassword.pending, (state, action) => {})
+      .addCase(updatePassword.fulfilled, (state, action) => {})
+      .addCase(updatePassword.rejected, (state, action) => {});
   },
 });
 

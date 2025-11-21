@@ -47,9 +47,10 @@ export async function addToCart(req, res) {
 
 export async function removeFromCart(req, res) {
   try {
-    const { userId, productId } = req.body;
+    const logginUser = req.user;
+    const { productId } = req.body;
 
-    const userExist = await User.findById(userId);
+    const userExist = await User.findById(logginUser.id);
     if (!userExist)
       return ApiError({
         res,
@@ -65,7 +66,7 @@ export async function removeFromCart(req, res) {
         detailMessage: "Product not found",
       });
 
-    const itemIndex = userDetails.cart.findIndex(
+    const itemIndex = userExist.cart.findIndex(
       (item) => item.product.toString() === productId
     );
 

@@ -35,7 +35,7 @@ export default function NewProductCard({
            stock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
          }`}
           >
-            {stock > 0 ? "In Stock" : "Out of Stock"}
+            {stock > 0 ? `In Stock : ${stock}` : "Out of Stock"}
           </span>
         </div>
       </div>

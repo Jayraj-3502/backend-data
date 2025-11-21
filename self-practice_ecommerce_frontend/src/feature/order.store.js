@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const initialState = {
   customerAllOrders: [],
@@ -8,13 +9,25 @@ const initialState = {
 
 export const addCustomerOrder = createAsyncThunk(
   "order/addCustomerOrder",
-  async (token, productId, quantity) => {
+  async ({
+    token,
+    productId,
+    quantity,
+    subtotal,
+    total,
+    address,
+    paymenttype,
+  }) => {
     try {
       const response = await axios.post(
         "http://localhost:3000/order/add",
         {
           productId,
           quantity,
+          subtotal,
+          total,
+          address,
+          paymenttype,
         },
         {
           headers: {
@@ -25,6 +38,7 @@ export const addCustomerOrder = createAsyncThunk(
       );
 
       console.log(response.data);
+      if (response.data?.success) toast.success("Product Buyed");
     } catch (err) {
       console.log(err);
     }

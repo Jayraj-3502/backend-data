@@ -45,6 +45,28 @@ export const addToCustomerCart = createAsyncThunk(
   }
 );
 
+export const removeToCustomerCart = createAsyncThunk(
+  "customer/removeToCustomerCart",
+  async ({ token, productId }) => {
+    try {
+      console.log(productId);
+      const response = await axios.delete("http://localhost:3000/cart/delete", {
+        data: {
+          productId,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
 export const getCustomerCartData = createAsyncThunk(
   "customer/getCustomerCartData",
   async (id) => {

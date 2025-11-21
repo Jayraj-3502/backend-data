@@ -37,7 +37,6 @@ export default function SellerProducts() {
   ];
 
   useEffect(() => {
-    console.log(currentUser._id);
     dispatch(getAllSellerProducts({ sellerId: currentUser._id }));
   }, [currentUser]);
 
@@ -47,7 +46,6 @@ export default function SellerProducts() {
   }
 
   async function editProductFuction(product) {
-    console.log(product);
     setCurrentEditProduct(product);
     setIsEditOpen(true);
   }
@@ -161,7 +159,7 @@ function ProductTableRow({
           }  rounded-full`}
         >
           {/*    */}
-          {stock > 0 ? "In Stock" : "Out of Stock"}
+          {stock > 0 ? "In Stock" : "Out of Stock"} : {stock}
         </span>
       </td>
       <td className="px-6 py-4 text-sm text-gray-700">{totalSold}</td>

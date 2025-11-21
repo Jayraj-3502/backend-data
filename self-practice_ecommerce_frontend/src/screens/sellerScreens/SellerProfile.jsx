@@ -5,7 +5,7 @@ import InputFieldSecond from "../../components/inputs/InputFieldSecond";
 import {
   logoutUser,
   tokenVerfication,
-  updateSellerProfileDetails,
+  updateProfileDetails,
 } from "../../feature/users.store";
 
 export default function SellerProfile() {
@@ -29,7 +29,7 @@ export default function SellerProfile() {
   async function onSubmitAction(event) {
     event.preventDefault();
     await dispatch(
-      updateSellerProfileDetails({ id: currentUser._id, ...updateDetails })
+      updateProfileDetails({ id: currentUser._id, ...updateDetails })
     );
     await dispatch(tokenVerfication());
     setIsOpen(false);
@@ -40,7 +40,6 @@ export default function SellerProfile() {
   }, []);
 
   useEffect(() => {
-    console.log(currentUser);
     setUpdateDetails({
       fullname: currentUser.fullname,
       phone: currentUser.phone,

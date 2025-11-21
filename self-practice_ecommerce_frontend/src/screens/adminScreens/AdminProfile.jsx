@@ -3,8 +3,9 @@ import { Popup } from "../../components/componentsExport";
 import { useEffect, useState } from "react";
 import InputFieldSecond from "../../components/inputs/InputFieldSecond";
 import {
+  logoutUser,
   tokenVerfication,
-  updateSellerProfileDetails,
+  updateProfileDetails,
 } from "../../feature/users.store";
 
 export default function AdminProfile() {
@@ -28,7 +29,7 @@ export default function AdminProfile() {
   async function onSubmitAction(event) {
     event.preventDefault();
     await dispatch(
-      updateSellerProfileDetails({ id: currentUser._id, ...updateDetails })
+      updateProfileDetails({ id: currentUser._id, ...updateDetails })
     );
     await dispatch(tokenVerfication());
     setIsOpen(false);

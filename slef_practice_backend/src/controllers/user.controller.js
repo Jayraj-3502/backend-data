@@ -136,15 +136,16 @@ export async function getUserById(req, res) {
 
 export async function updateUserData(req, res) {
   try {
+    const logginUser = req.user;
     const { fullname, phone } = req.body;
 
-    const userExist = await User.findById(req.params.id);
+    const userExist = await User.findById(logginUser.id);
     if (!userExist) {
       return res.status(404).send({ Message: "User not found" });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
+      logginUser.id,
       { $set: { fullname, phone } },
       { new: true, runValidators: true }
     );
@@ -245,9 +246,8 @@ export async function verifyUserAndCreate(req, res) {
 
 export async function passwordForgotOtp(req, res) {
   try {
-    console.log("This is running");
     const { email } = req.body;
-    console.log("this is running");
+    console.log(email);
     const userExistDetails = await User.findOne({ email });
 
     if (!userExistDetails) {
@@ -325,7 +325,7 @@ export async function verificationForgotPassword(req, res) {
   }
 }
 
-export async function resetForgotPassword(req, res) {
+export async function resetPassword(req, res) {
   try {
     const { password, email } = req.body;
 
@@ -337,13 +337,22 @@ export async function resetForgotPassword(req, res) {
         detailMessage: "User Not Found",
       });
 
+    const newPassword = await bcrypt.hash(password, 10);
+
     const updateUser = await User.findByIdAndUpdate(
       userExist._id,
       {
-        $set: { password },
+        $set: { password: newPassword },
       },
       { new: true, runValidators: true }
     );
+
+    return ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Update",
+      responceData: {},
+    });
   } catch (err) {}
 }
 
@@ -359,6 +368,41 @@ export async function getUserDataBasedOnToken(req, res) {
       res,
       statusCode: 200,
       activityType: "Fetch",
+      responceData: userDetails,
+    });
+  } catch (err) {
+    ApiError({ res, statusCode: 500, detailMessage: err });
+  }
+}
+
+export async function addAddress(req, res) {
+  try {
+    const logginUser = req.user;
+    const address = req.body;
+
+    const userDetails = await User.findById(logginUser.id);
+
+    if (!userDetails)
+      return ApiError({
+        res,
+        statusCode: 404,
+        detailMessage: "User Not Found",
+      });
+
+    userDetails.address.unshift({
+      street: address.street,
+      city: address.city,
+      state: address.state,
+      zipcode: address.zipcode,
+      country: address.country,
+    });
+
+    userDetails.save();
+
+    return ApiResponce({
+      res,
+      statusCode: 200,
+      activityType: "Add Address",
       responceData: userDetails,
     });
   } catch (err) {

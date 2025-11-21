@@ -30,6 +30,9 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import AuthProtectedRoute from "./routes/AuthProtectedRoute.jsx";
 import OrderScreen from "./screens/defaultScreens/OrderScreen.jsx";
 import AdminProfile from "./screens/adminScreens/AdminProfile.jsx";
+import ForgotPassword from "./screens/auth/ForgotPassword.jsx";
+import OtpVerification from "./screens/auth/OtpVerification.jsx";
+import UpdatePassword from "./screens/auth/UpdatePassword.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -65,6 +68,16 @@ function App() {
                 </AuthProtectedRoute>
               }
             />
+            <Route
+              path="forgot-password"
+              element={
+                <AuthProtectedRoute>
+                  <ForgotPassword />
+                </AuthProtectedRoute>
+              }
+            />
+            <Route path="otp-verification" element={<OtpVerification />} />
+            <Route path="update-password" element={<UpdatePassword />} />
 
             <Route
               path="dashboard"

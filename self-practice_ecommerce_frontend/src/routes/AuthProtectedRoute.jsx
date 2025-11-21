@@ -3,8 +3,6 @@ import { Navigate } from "react-router-dom";
 
 export default function AuthProtectedRoute({ children }) {
   const { currentUser } = useSelector((state) => state.user);
-  console.log("Auth Protected Route Is Running");
-  console.log(currentUser);
 
   if (currentUser.role === "user") {
     return <Navigate to={"/dashboard/home"} replace />;

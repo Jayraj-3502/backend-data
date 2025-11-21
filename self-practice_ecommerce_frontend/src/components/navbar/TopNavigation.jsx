@@ -8,9 +8,12 @@ export default function TopNavigation() {
   return (
     <nav className="w-full bg-white dark:bg-gray-900 shadow-md px-4 py-3 flex items-center justify-between sticky top-0 z-50">
       {/* LEFT — Logo */}
-      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+      <Link
+        to={"/dashboard/home"}
+        className="text-2xl font-bold text-blue-600 dark:text-blue-400"
+      >
         MyLogo
-      </div>
+      </Link>
 
       {/* CENTER — Search Bar */}
       <div className="hidden sm:flex w-1/2 md:w-1/3 relative">

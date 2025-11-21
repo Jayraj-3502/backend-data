@@ -35,8 +35,6 @@ export default function SignupScreen() {
       return;
     }
 
-    console.log("Password are Matched");
-
     const response = await axios.post("http://localhost:3000/register", {
       email: inputDetails.email,
     });

@@ -39,6 +39,7 @@ const orderSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+  paymenttype: { type: String, required: true },
   status: {
     type: String,
     enum: ["pending", "processing", "shipping", "delivered", "cancled"],

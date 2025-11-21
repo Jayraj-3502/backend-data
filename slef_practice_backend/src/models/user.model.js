@@ -1,13 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 
-const addressSchema = new Schema({
-  street: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  zipcode: { type: String, required: true },
-  country: { type: String, required: true },
-});
-
 const userSchema = new mongoose.Schema(
   {
     fullname: {
@@ -35,7 +27,15 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user", "seller"],
       default: "user",
     },
-    address: [addressSchema],
+    address: [
+      {
+        street: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        zipcode: { type: String, required: true },
+        country: { type: String, required: true },
+      },
+    ],
     cart: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },

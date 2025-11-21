@@ -9,9 +9,9 @@ import {
   loginUser,
   verifyUserAndCreate,
   passwordForgotOtp,
-  resetForgotPassword,
   verificationForgotPassword,
   getUserDataBasedOnToken,
+  resetPassword,
 } from "../controllers/user.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
@@ -27,13 +27,12 @@ userRoutes
   .route("/verificationforgotpassword")
   .post(verificationForgotPassword);
 
-userRoutes.route("/resetPassword").post(resetForgotPassword);
+userRoutes.route("/resetPassword").post(resetPassword);
 userRoutes.route("/tokenverification").post(getUserDataBasedOnToken);
-
+userRoutes.route("/update").put(authMiddleware, updateUserData);
 userRoutes
   .route("/user/:id")
   .get(authMiddleware, getUserById)
-  .delete(authMiddleware, deleteUserById)
-  .put(updateUserData);
+  .delete(authMiddleware, deleteUserById);
 
 export default userRoutes;
