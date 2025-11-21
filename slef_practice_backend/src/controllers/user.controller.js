@@ -224,14 +224,14 @@ export async function verifyUserAndCreate(req, res) {
         detailMessage: "Something Went wrong",
       });
 
-    const otpDeleted = await Otp.findByIdAndDelete(otpExist._id);
+    // const otpDeleted = await Otp.findByIdAndDelete(otpExist._id);
 
-    if (!otpDeleted)
-      return ApiError({
-        res,
-        statusCode: 400,
-        detailMessage: "Something went wrong",
-      });
+    // if (!otpDeleted)
+    //   return ApiError({
+    //     res,
+    //     statusCode: 400,
+    //     detailMessage: "Something went wrong",
+    //   });
 
     ApiResponce({
       res,
@@ -305,14 +305,14 @@ export async function verificationForgotPassword(req, res) {
         detailMessage: "OTP is not the same",
       });
 
-    const otpDeleted = await Otp.findByIdAndDelete(otpExist._id);
+    // const otpDeleted = await Otp.findByIdAndDelete(otpExist._id);
 
-    if (!otpDeleted)
-      return ApiError({
-        res,
-        statusCode: 400,
-        detailMessage: "Something went wrong",
-      });
+    // if (!otpDeleted)
+    //   return ApiError({
+    //     res,
+    //     statusCode: 400,
+    //     detailMessage: "Something went wrong",
+    //   });
 
     ApiResponce({
       res,
