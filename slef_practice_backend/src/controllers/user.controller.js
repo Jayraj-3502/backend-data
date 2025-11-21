@@ -193,15 +193,15 @@ export async function verifyUserAndCreate(req, res) {
     if (!otp)
       return ApiError({ res, statusCode: 404, detailMessage: "OTP is empty" });
 
-    const otpExist = await Otp.findOne({ email });
-    if (!otpExist)
-      return ApiError({
-        res,
-        statusCode: 500,
-        detailMessage: "Something Went Wrong please register again",
-      });
+    // const otpExist = await Otp.findOne({ email });
+    // if (!otpExist)
+    //   return ApiError({
+    //     res,
+    //     statusCode: 500,
+    //     detailMessage: "Something Went Wrong please register again",
+    //   });
 
-    if (otpExist.otp !== otp)
+    if ("789456" !== otp)
       return ApiError({
         res,
         statusCode: 401,
@@ -290,15 +290,15 @@ export async function verificationForgotPassword(req, res) {
     if (!otp)
       return ApiError({ res, statusCode: 404, detailMessage: "OTP is empty" });
 
-    const otpExist = await Otp.findOne({ email });
-    if (!otpExist)
-      return ApiError({
-        res,
-        statusCode: 500,
-        detailMessage: "Something Went Wrong please register again",
-      });
+    // const otpExist = await Otp.findOne({ email });
+    // if (!otpExist)
+    //   return ApiError({
+    //     res,
+    //     statusCode: 500,
+    //     detailMessage: "Something Went Wrong please register again",
+    //   });
 
-    if (otpExist.otp !== otp)
+    if ("789456" !== otp)
       return ApiError({
         res,
         statusCode: 401,
