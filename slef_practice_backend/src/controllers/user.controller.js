@@ -76,7 +76,7 @@ export async function loginUser(req, res) {
         emial: userDetails.email,
         role: userDetails.role,
       },
-      process.env.JWT_SECRET,
+      "jairajrahtod123",
       { expiresIn: "1d" }
     );
 
@@ -87,6 +87,7 @@ export async function loginUser(req, res) {
       responceData: { token, userDetails },
     });
   } catch (err) {
+    console.log(err);
     ApiError({ res, statusCode: 500, detailMessage: err });
   }
 }
