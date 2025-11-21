@@ -10,7 +10,7 @@ import {
 
 export default function SellerProfile() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, tokenDetails } = useSelector((state) => state.user);
   const {
     fullname,
     email,
@@ -29,7 +29,7 @@ export default function SellerProfile() {
   async function onSubmitAction(event) {
     event.preventDefault();
     await dispatch(
-      updateProfileDetails({ id: currentUser._id, ...updateDetails })
+      updateProfileDetails({ token: tokenDetails, ...updateDetails })
     );
     await dispatch(tokenVerfication());
     setIsOpen(false);

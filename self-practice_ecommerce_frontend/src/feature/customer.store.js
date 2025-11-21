@@ -48,7 +48,7 @@ export const removeToCustomerCart = createAsyncThunk(
   async ({ token, productId }) => {
     try {
       console.log(productId);
-      const response = await axios.delete(`${baseURL}/cart/delete"`, {
+      const response = await axios.delete(`${baseURL}/cart/delete`, {
         data: {
           productId,
         },
