@@ -12,9 +12,8 @@ export default function DefaultHomeScreen() {
   }, []);
 
   return (
-    <div className="p-5">
-      <h1 className="text-5xl font-bold mb-10">Products Details</h1>
-      <div className="flex flex-row gap-3 flex-wrap">
+    <div className="p-3 md:p-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {allProducts.map((product) => {
           const { name, price, stock, _id } = product;
           return (

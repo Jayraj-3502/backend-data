@@ -90,11 +90,9 @@ function App() {
               <Route path="home" element={<DefaultHomeScreen />} />
               <Route path="details/:id" element={<ProductDetailsScreen />} />
               <Route path="buynow" element={<OrderScreen />} />
-              <Route path="profile" element={<ProfileScreen />}>
-                <Route path="details" element={<ProfileDetails />} />
-                <Route path="orders" element={<ProfileOrders />} />
-                <Route path="cart" element={<ProfileCart />} />
-              </Route>
+              <Route path="profile" element={<ProfileDetails />} />
+              <Route path="orders" element={<ProfileOrders />} />
+              <Route path="cart" element={<ProfileCart />} />
             </Route>
             <Route
               path="admin-dashboard"

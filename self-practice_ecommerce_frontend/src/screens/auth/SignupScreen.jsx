@@ -62,7 +62,7 @@ export default function SignupScreen() {
         >
           <div className="text-5xl font-bold">Signup</div>
           <div className="flex flex-col gap-2 items-center">
-            <div className="flex flex-row gap-10 items-center">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-10">
               <InputFieldSecond
                 label="Full Name"
                 name="fullname"
@@ -95,7 +95,7 @@ export default function SignupScreen() {
               />
             </div>
 
-            <div className="flex flex-row gap-10 items-center">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-10">
               <InputFieldSecond
                 label="Password"
                 name="password"
@@ -125,7 +125,7 @@ export default function SignupScreen() {
               />
             </div>
 
-            <div className="flex flex-row gap-10 items-center">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-10">
               <InputFieldSecond
                 label="Phone"
                 name="phone"
@@ -133,21 +133,19 @@ export default function SignupScreen() {
                 defaultValue={inputDetails.phone}
                 placeholderText="Enter Phone Number"
                 required={true}
+                onInput={(event) => {
+                  console.log(event.target.value);
+                  event.target.value = event.target.value.replace(
+                    /[^0-9]/g,
+                    ""
+                  );
+                }}
                 updaterFunction={(event) => {
-                  const value = event.target.value;
-                  if (
-                    (value >= "a" && value <= "z") ||
-                    (value >= "A" && value <= "Z")
-                  ) {
-                    event.target.value = "";
-                    console.log(event.target.value);
-                  } else {
-                    setInputDetails((prev) => ({
-                      ...prev,
-                      phone: event.target.value,
-                    }));
-                    console.log(event.target.value);
-                  }
+                  setInputDetails((prev) => ({
+                    ...prev,
+                    phone: event.target.value,
+                  }));
+                  console.log(event.target.value);
                 }}
               />
               <DropdownSecond

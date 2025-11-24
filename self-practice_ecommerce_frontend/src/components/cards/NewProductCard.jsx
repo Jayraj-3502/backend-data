@@ -9,7 +9,7 @@ export default function NewProductCard({
   return (
     <Link
       to={`../details/${id}`}
-      className="w-[250px] max-w-[250px] bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className="w-full bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
       <img
         className="w-full h-48 object-cover bg-gray-300"
@@ -35,7 +35,7 @@ export default function NewProductCard({
            stock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
          }`}
           >
-            {stock > 0 ? `In Stock : ${stock}` : "Out of Stock"}
+            {stock}
           </span>
         </div>
       </div>

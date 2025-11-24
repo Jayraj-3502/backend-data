@@ -1,9 +1,13 @@
-import { FaSearch, FaMoon, FaSun } from "react-icons/fa";
+import { FaSearch, FaMoon, FaSun, FaShoppingCart } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Badge from "@mui/material/Badge";
+import { FaBoxOpen } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 export default function TopNavigation() {
   const [darkMode, setDarkMode] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
 
   return (
     <nav className="w-full bg-white dark:bg-gray-900 shadow-md px-4 py-3 flex items-center justify-between sticky top-0 z-50">
@@ -27,6 +31,16 @@ export default function TopNavigation() {
 
       {/* RIGHT — Profile + Theme Switch */}
       <div className="flex items-center gap-4">
+        <Link to={"/dashboard/cart"}>
+          <Badge badgeContent={currentUser?.cart.length} color="primary">
+            <FaBoxOpen className="text-white text-2xl" />
+          </Badge>
+        </Link>
+
+        <Link to={"/dashboard/orders"}>
+          <FaShoppingCart className="text-white text-2xl" />
+        </Link>
+
         {/* Theme Switch Button */}
         <button
           onClick={() => setDarkMode(!darkMode)}
@@ -36,11 +50,11 @@ export default function TopNavigation() {
         </button>
 
         {/* Profile Image */}
-        <Link to="./profile/details">
+        <Link to="./profile">
           <img
             src="asdasf"
             alt="Profile"
-            className="w-10 h-10 bg-white rounded-full border-2 border-gray-300 dark:border-gray-700 object-cover cursor-pointer"
+            className="w-7 h-7 bg-white rounded-full border-2 border-gray-300 dark:border-gray-700 object-cover cursor-pointer"
           />
         </Link>
       </div>

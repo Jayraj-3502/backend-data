@@ -32,7 +32,7 @@ export default function ProfileDetails() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 flex justify-center px-4 py-10">
+    <div className="w-full bg-white flex justify-center px-4 py-10">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-4xl">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row items-center gap-6 mb-10">
@@ -81,7 +81,7 @@ export default function ProfileDetails() {
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <DataCard
             color="blue"
             value={currentUser?.totalorders}
@@ -98,26 +98,7 @@ export default function ProfileDetails() {
             title="Cart Items"
           />
         </div>
-
-        {/* Information Section */}
-        <div className="bg-gray-50 p-6 rounded-xl shadow-inner space-y-4">
-          <h3 className="text-xl font-semibold text-gray-700">Addresses</h3>
-          <button>Add Address</button>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <InfoSectionCard title={"Full Name"} description={"Amit Sharma"} />
-          </div>
-        </div>
       </div>
-    </div>
-  );
-}
-
-function InfoSectionCard({ title, description }) {
-  return (
-    <div>
-      <p className="text-gray-500 text-sm">{title}</p>
-      <p className="text-gray-800 font-medium">{description}</p>
     </div>
   );
 }
@@ -146,62 +127,7 @@ function UserDetailsEditPopup({
       onClose={() => setIsOpen(false)}
       title="Edit Profile"
     >
-      <form action="" onSubmit={onSubmitAction}>
-        <InputFieldSecond
-          label="Full Name"
-          name="fullname"
-          type="text"
-          defaultValue={details.fullname}
-          placeholderText="Enter Full Name"
-          required={false}
-          disable={false}
-          updaterFunction={(event) => {
-            setDetails((prev) => ({
-              ...prev,
-              fullname: event.target.value,
-            }));
-          }}
-        />
-        <InputFieldSecond
-          label="Phone"
-          name="phone"
-          type="text"
-          defaultValue={details.phone}
-          placeholderText="Enter Phone Number"
-          required={false}
-          disable={false}
-          updaterFunction={(event) => {
-            setDetails((prev) => ({
-              ...prev,
-              phone: event.target.value,
-            }));
-          }}
-        />
-        <button
-          type="submit"
-          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition"
-        >
-          Update
-        </button>
-      </form>
-    </Popup>
-  );
-}
-
-function AddressDetailsEditPopup({
-  isOpen,
-  setIsOpen,
-  onSubmitAction,
-  details,
-  setDetails,
-}) {
-  return (
-    <Popup
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      title="Edit Profile"
-    >
-      <form action="" onSubmit={onSubmitAction}>
+      <form action="" onSubmit={onSubmitAction} className="flex flex-col gap-3">
         <InputFieldSecond
           label="Full Name"
           name="fullname"

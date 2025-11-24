@@ -1,88 +1,48 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCustomerOrder } from "../../feature/order.store";
 import { getCustomerOrders } from "../../feature/customer.store";
+import OrderItemCard from "./components/OrderItemCard";
+import PageHeader from "./components/PageHeader";
 
 export default function ProfileOrders() {
-  const tableHeaderText = [
-    "S.No",
-    "Product Name",
-    "Quantity",
-    "Price",
-    "Total",
-    "Status",
-  ];
-
   const dispatch = useDispatch();
   const { allOrders = [] } = useSelector((state) => state.customer);
-  const { tokenDetails } = useSelector((state) => state.user);
+  const { tokenDetails, currentUser } = useSelector((state) => state.user);
+  const [totalOrderAmount, setTotalOrderAmount] = useState(0);
 
   useEffect(() => {
     dispatch(getCustomerOrders(tokenDetails));
   }, []);
 
   useEffect(() => {
+    const amount = allOrders.reduce((acc, order) => {
+      return acc + order?.totalamount;
+    }, 0);
+    setTotalOrderAmount(amount.toFixed(2));
     console.log(allOrders);
   }, [allOrders]);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-200 rounded-lg shadow-md">
-        <thead className="bg-gray-100">
-          <tr>
-            {tableHeaderText.map((text, index) => (
-              <th
-                key={index + 1}
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                {text}
-              </th>
-            ))}
-          </tr>
-        </thead>
+    <div className=" p-5">
+      {/* Header Section */}
+      <PageHeader
+        title="Order Cart"
+        value={allOrders?.length || 0}
+        valuePrefixText="items in your orders"
+        totalAmountValue={totalOrderAmount}
+      />
 
-        <tbody className="divide-y divide-gray-200">
-          {console.log(allOrders)}
-          {allOrders &&
-            allOrders.map((order, index) => {
-              return (
-                <UserOrdersTableRow
-                  key={order.products[0].product._id + index}
-                  sno={index + 1}
-                  id={order.products[0].product._id}
-                  name={order.products[0].product.name}
-                  quantity={order.products[0].quantity}
-                  price={order.products[0].price}
-                  total={order.totalamount}
-                  status={order.status}
-                />
-              );
-            })}
-        </tbody>
-      </table>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {allOrders.map((order) => (
+          <OrderItemCard
+            name={order?.products[0]?.product?.name}
+            orderQuantity={order?.products[0]?.quantity}
+            basePrice={order?.products[0]?.price}
+            totalPrice={order?.totalamount}
+            deleveryStatus={order?.status}
+          />
+        ))}
+      </div>
     </div>
-  );
-}
-
-function UserOrdersTableRow({
-  sno,
-  id,
-  name = "",
-  quantity = "",
-  price = "",
-  total = "",
-  status = "",
-}) {
-  return (
-    <tr className="hover:bg-gray-50">
-      <td className="px-6 py-4 text-sm text-gray-700">{sno}</td>
-      <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-        {name.slice(0, 15)}
-      </td>
-      <td className="px-6 py-4 text-sm text-gray-700">{quantity}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">{price}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">${total}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">{status}</td>
-    </tr>
   );
 }

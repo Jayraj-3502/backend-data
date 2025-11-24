@@ -6,13 +6,16 @@ import {
 } from "../../feature/customer.store";
 import { MdDelete } from "react-icons/md";
 import { getCurrentProductDetails } from "../../feature/products.store";
-import { useNavigate } from "react-router-dom";
 import { tokenVerfication } from "../../feature/users.store";
+import { Link, useNavigate } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
+import EmptyCart from "./components/EmptyCart";
+import CartItemCard from "./components/CartItemCard";
+import PageHeader from "./components/PageHeader";
 
 export default function ProfileCart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const tableHeaderText = ["S.No", "Product Name", "Brand", "Price", ""];
   const { currentUser, tokenDetails } = useSelector((state) => state.user);
   const { allCartItems } = useSelector((state) => state.customer);
 
@@ -22,7 +25,6 @@ export default function ProfileCart() {
 
   async function buyButton(productId) {
     await dispatch(getCurrentProductDetails(productId));
-
     navigate("/dashboard/buynow");
   }
 
@@ -36,80 +38,44 @@ export default function ProfileCart() {
     await dispatch(tokenVerfication());
   }
 
+  // Calculate total
+  const totalAmount =
+    allCartItems?.reduce((sum, item) => sum + (item.product.price || 0), 0) ||
+    0;
+
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-200 rounded-lg shadow-md">
-        <thead className="bg-gray-100">
-          <tr>
-            {tableHeaderText.map((text, index) => (
-              <th
-                key={index + 1}
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                {text}
-              </th>
+    <div className=" p-5">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <PageHeader
+          title="Shopping Cart"
+          value={allCartItems?.length || 0}
+          valuePrefixText="items in your cart"
+          totalAmountValue={totalAmount}
+        />
+
+        {/* Cart Items */}
+        {allCartItems && allCartItems.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {allCartItems.map((product, index) => (
+              <CartItemCard
+                key={product.product._id}
+                sno={index + 1}
+                productId={product.product._id}
+                name={product.product.name}
+                color={product.product.color}
+                price={product.product.price}
+                stock={product.product.stock}
+                brand={product.product.brand}
+                onClickBuy={() => buyButton(product.product._id)}
+                onClickDelete={() => deleteButton(product.product._id)}
+              />
             ))}
-          </tr>
-        </thead>
-
-        <tbody className="divide-y divide-gray-200">
-          {allCartItems &&
-            allCartItems.map((product, index) => {
-              console.log(product.product);
-              return (
-                <UserCartTableRow
-                  key={product.product._id}
-                  sno={index + 1}
-                  productId={product.product._id}
-                  name={product.product.name}
-                  color={product.product.color}
-                  price={product.product.price}
-                  stock={product.product.stock}
-                  brand={product.product.brand}
-                  onClickBuy={() => {
-                    buyButton(product.product._id);
-                  }}
-                  onClickDelete={() => {
-                    deleteButton(product.product._id);
-                  }}
-                />
-              );
-            })}
-        </tbody>
-      </table>
+          </div>
+        ) : (
+          <EmptyCart />
+        )}
+      </div>
     </div>
-  );
-}
-
-function UserCartTableRow({
-  sno,
-  productId,
-  name,
-  price,
-  brand,
-  onClickBuy,
-  onClickDelete,
-}) {
-  return (
-    <tr className="hover:bg-gray-50">
-      <td className="px-6 py-4 text-sm text-gray-700">{sno}</td>
-      <td className="px-6 py-4 text-sm text-gray-900 font-medium">{name}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">{brand}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">{price}</td>
-      <td className="px-6 py-4 flex flex-row justify-center items-center gap-2">
-        <button
-          className="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-3 py-2 rounded-lg transition duration-200"
-          onClick={onClickBuy}
-        >
-          Buy
-        </button>
-        <button
-          className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-2 rounded-lg transition duration-200"
-          onClick={onClickDelete}
-        >
-          <MdDelete fontSize={"20px"} />
-        </button>
-      </td>
-    </tr>
   );
 }
