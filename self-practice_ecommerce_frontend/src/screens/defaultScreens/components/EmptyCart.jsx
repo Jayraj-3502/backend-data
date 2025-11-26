@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function EmptyCart() {
+export default function EmptyCart({}) {
   return (
     <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-12 text-center">
       <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">

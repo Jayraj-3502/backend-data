@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCustomerOrders } from "../../feature/customer.store";
 import OrderItemCard from "./components/OrderItemCard";
 import PageHeader from "./components/PageHeader";
+import EmptyCard from "../../components/empty/EmptyCard";
+import { FaCartShopping } from "react-icons/fa6";
 
 export default function ProfileOrders() {
   const dispatch = useDispatch();
@@ -25,23 +27,40 @@ export default function ProfileOrders() {
   return (
     <div className=" p-5">
       {/* Header Section */}
-      <PageHeader
-        title="Order Cart"
-        value={allOrders?.length || 0}
-        valuePrefixText="items in your orders"
-        totalAmountValue={totalOrderAmount}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {allOrders.map((order) => (
-          <OrderItemCard
-            name={order?.products[0]?.product?.name}
-            orderQuantity={order?.products[0]?.quantity}
-            basePrice={order?.products[0]?.price}
-            totalPrice={order?.totalamount}
-            deleveryStatus={order?.status}
+      {allOrders.length ? (
+        <PageHeader
+          title="Order Cart"
+          value={allOrders?.length || 0}
+          valuePrefixText="items in your orders"
+          totalAmountValue={totalOrderAmount}
+        />
+      ) : (
+        <div></div>
+      )}
+      <div
+        className={`${
+          allOrders.length
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+            : ""
+        } `}
+      >
+        {allOrders && allOrders.length ? (
+          allOrders.map((order) => (
+            <OrderItemCard
+              name={order?.products[0]?.product?.name}
+              orderQuantity={order?.products[0]?.quantity}
+              basePrice={order?.products[0]?.price}
+              totalPrice={order?.totalamount}
+              deleveryStatus={order?.status}
+            />
+          ))
+        ) : (
+          <EmptyCard
+            title="Not Ordered Yet"
+            description="Buy some products to get started!"
+            icon={<FaCartShopping className="w-12 h-12" />}
           />
-        ))}
+        )}
       </div>
     </div>
   );

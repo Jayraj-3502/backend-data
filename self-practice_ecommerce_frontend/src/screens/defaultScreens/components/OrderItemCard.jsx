@@ -13,7 +13,7 @@ export default function OrderItemCard({
           <div className="flex flex-row items-start justify-between">
             <div className="">
               <h3 className="text-2xl font-bold text-slate-800 mb-2">{name}</h3>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-col items-center gap-3">
                 <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
                   <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
                   Ordered Quantity : {orderQuantity}

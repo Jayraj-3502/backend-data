@@ -9,6 +9,8 @@ import { HiCurrencyDollar } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
 import HighDetailCard from "./components/HighDetailCard";
+import StatsCard from "../../components/cards/StatsCard";
+import HeaderSection from "./components/HeaderSection";
 
 export default function AdminProducts() {
   const dispatch = useDispatch();
@@ -24,41 +26,36 @@ export default function AdminProducts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">
-            Products Management
-          </h1>
-          <p className="text-slate-600">
-            Manage your product inventory and sales
-          </p>
-        </div>
+        <HeaderSection
+          title="Products Management"
+          description="Manage your product inventory and sales"
+        />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <HighDetailCard
+          <StatsCard
             title="Total Products"
             value={allProducts.length}
-            icon={<FaBoxArchive className="w-6 h-6 text-blue-600" />}
+            icon={<FaBoxArchive className="w-6 h-6 text-white-600" />}
             color="blue"
           />
-
-          <HighDetailCard
+          <StatsCard
             title="In Stock"
             value={allProducts.filter((p) => p.stock > 0).length}
-            icon={<SiTicktick className="w-6 h-6 text-green-600" />}
+            icon={<SiTicktick className="w-6 h-6 text-white-600" />}
             color="green"
           />
 
-          <HighDetailCard
+          <StatsCard
             title="Total Sold"
             value={allProducts.reduce(
               (sum, p) => sum + (p.totalSelled || 0),
               0
             )}
-            icon={<FaArrowTrendUp className="w-6 h-6 text-purple-600" />}
+            icon={<FaArrowTrendUp className="w-6 h-6 text-white-600" />}
             color="purple"
           />
         </div>
@@ -98,7 +95,7 @@ function ProductCard({ sno, name, price, stock, totalSold, clickAction }) {
         {/* Product Details Grid */}
         <div className="space-y-3 mb-5">
           {/* Price */}
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <HiCurrencyDollar className="w-4 h-4 text-green-600" />
@@ -109,7 +106,7 @@ function ProductCard({ sno, name, price, stock, totalSold, clickAction }) {
           </div>
 
           {/* Stock Status */}
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center ${
@@ -141,7 +138,7 @@ function ProductCard({ sno, name, price, stock, totalSold, clickAction }) {
           </div>
 
           {/* Total Sold */}
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                 <FaArrowTrendUp className="w-4 h-4 text-purple-600" />

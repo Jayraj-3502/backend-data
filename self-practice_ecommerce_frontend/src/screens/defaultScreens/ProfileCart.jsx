@@ -12,6 +12,8 @@ import { FaShoppingCart } from "react-icons/fa";
 import EmptyCart from "./components/EmptyCart";
 import CartItemCard from "./components/CartItemCard";
 import PageHeader from "./components/PageHeader";
+import EmptyCard from "../../components/empty/EmptyCard";
+import { FaBoxOpen } from "react-icons/fa6";
 
 export default function ProfileCart() {
   const dispatch = useDispatch();
@@ -73,7 +75,15 @@ export default function ProfileCart() {
             ))}
           </div>
         ) : (
-          <EmptyCart />
+          <EmptyCard
+            title="Your cart is empty"
+            description="Add some products to get started!"
+            icon={<FaBoxOpen className="w-12 h-12" />}
+            buttonExist={true}
+            buttonIcon=""
+            buttonText="Continue Shoping"
+            buttonUrl="/dashboard/home"
+          />
         )}
       </div>
     </div>
