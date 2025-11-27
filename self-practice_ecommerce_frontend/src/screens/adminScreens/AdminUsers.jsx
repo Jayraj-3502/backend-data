@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Users, ShoppingBag, DollarSign, Search } from "lucide-react";
 import { deleteUserForAdmin, getAllUsersData } from "../../feature/admin.store";
-import HeaderSection from "./components/HeaderSection";
+import HeaderSection from "../../components/HeaderSection.jsx";
 import StatsCard from "../../components/cards/StatsCard";
 import { NameColumn } from "./components/TableFields.jsx";
 import { CountColumn } from "./components/TableFields.jsx";
@@ -67,7 +67,7 @@ export default function AdminUsers() {
             />
             <StatsCard
               icon={<ShoppingBag className="w-6 h-6" />}
-              title="Total Orders"
+              title="Product Buyed Count"
               value={totalOrders}
               color="purple"
             />

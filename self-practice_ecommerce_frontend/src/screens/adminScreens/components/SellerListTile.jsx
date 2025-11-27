@@ -1,23 +1,30 @@
 import React from "react";
-import { ShoppingBag, DollarSign, Package2 } from "lucide-react";
+import { ShoppingBag, DollarSign, Package2, Users } from "lucide-react";
 import ValueSubBox from "./ValueSubBox";
 
 const ListTile = ({
   imageUrl = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
   name = "John Doe",
-  totalOrders = 0,
-  totalSpend = 0,
+  totalProducts = 0,
+  totalProductsSelled = 0,
+  totalRevenue = 0,
 }) => {
   return (
     <>
       <div className="relative flex items-center gap-3 p-1">
         {/* Left side - Image with gradient ring */}
         <div className="flex-shrink-0 relative">
-          <img
-            src={imageUrl}
-            alt={name}
-            className="relative w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md group-hover:scale-105 transition-transform duration-300"
-          />
+          {imageUrl === "" ? (
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold mr-3">
+              {name.charAt(0).toUpperCase()}
+            </div>
+          ) : (
+            <img
+              src={imageUrl}
+              alt={name}
+              className="relative w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md group-hover:scale-105 transition-transform duration-300"
+            />
+          )}
         </div>
 
         {/* Right side - User Info */}
@@ -30,21 +37,21 @@ const ListTile = ({
             {/* Orders Badge */}
             <ValueSubBox
               color="blue"
-              value={totalOrders}
+              value={totalProducts}
               icon={<ShoppingBag className="w-3 h-3 text-blue-700" />}
             />
 
             {/* Spend Badge */}
             <ValueSubBox
               color="purple"
-              value={totalSpend}
+              value={totalProductsSelled}
               icon={<Package2 className="w-3 h-3 text-purple-700" />}
             />
 
             {/* Spend Badge */}
             <ValueSubBox
               color="green"
-              value={totalSpend.toLocaleString()}
+              value={totalRevenue.toLocaleString()}
               icon={<DollarSign className="w-3 h-3 text-green-700" />}
             />
           </div>
@@ -55,55 +62,27 @@ const ListTile = ({
 };
 
 // Demo with multiple users
-export default function SellerListTile() {
-  const users = [
-    {
-      imageUrl: "asd",
-      name: "John Doe",
-      totalOrders: 24,
-      totalSpend: 1234.56,
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-      name: "Sarah Johnson",
-      totalOrders: 18,
-      totalSpend: 892.3,
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-      name: "Michael Chen",
-      totalOrders: 42,
-      totalSpend: 2567.89,
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-      name: "Emily Rodriguez",
-      totalOrders: 15,
-      totalSpend: 654.2,
-    },
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-      name: "David Kim",
-      totalOrders: 31,
-      totalSpend: 1876.45,
-    },
-  ];
-
+export default function SellerListTile({ data = [] }) {
   return (
     <div className="space-y-4">
-      {users.map((user, index) => (
-        <ListTile
-          key={index}
-          imageUrl={user.imageUrl}
-          name={user.name}
-          totalOrders={user.totalOrders}
-          totalSpend={user.totalSpend}
-        />
-      ))}
+      {data.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-gray-400">
+          <Users className="w-12 h-12 mb-3 opacity-50" />
+          <p className="text-lg font-medium">Something Wrong</p>
+          <p className="text-sm">Please check your internet!</p>
+        </div>
+      ) : (
+        data.map((seller, index) => (
+          <ListTile
+            key={seller._id}
+            imageUrl={seller?.imageUrl || ""}
+            name={seller?.fullname}
+            totalProducts={seller?.totalproductofseller}
+            totalProductsSelled={seller?.totalproductsselled}
+            totalRevenue={seller?.totalproductsselledamount}
+          />
+        ))
+      )}
     </div>
   );
 }

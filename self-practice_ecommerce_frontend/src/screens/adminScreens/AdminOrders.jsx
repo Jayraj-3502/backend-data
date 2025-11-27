@@ -4,7 +4,7 @@ import { getAllOrdersDetails } from "../../feature/admin.store";
 import { Dropdown } from "../../components/componentsExport";
 import { updateOrderStatusForSeller } from "../../feature/seller.store";
 import { DollarSign, Package2, ShoppingBag, Users } from "lucide-react";
-import HeaderSection from "./components/HeaderSection";
+import HeaderSection from "../../components/HeaderSection";
 import StatsCard from "../../components/cards/StatsCard";
 import SearchBar from "./components/SearchBar";
 import { CountColumn, NameColumn } from "./components/TableFields";
@@ -60,13 +60,13 @@ export default function AdminOrders() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatsCard
           icon={<Users className="w-6 h-6" />}
-          title="Total Buyes"
+          title="Order Count"
           value={totalBuyers}
           color="blue"
         />
         <StatsCard
           icon={<ShoppingBag className="w-6 h-6" />}
-          title="Total Orders"
+          title="Buyed Product Count"
           value={totalQuantity}
           color="purple"
         />

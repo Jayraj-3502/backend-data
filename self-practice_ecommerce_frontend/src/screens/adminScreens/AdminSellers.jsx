@@ -5,7 +5,7 @@ import {
   getAllProductsDetails,
   getAllSellersData,
 } from "../../feature/admin.store";
-import HeaderSection from "./components/HeaderSection";
+import HeaderSection from "../../components/HeaderSection.jsx";
 import StatsCard from "../../components/cards/StatsCard";
 import {
   DollarSign,

@@ -5,6 +5,8 @@ import {
 } from "../../feature/seller.store";
 import { useEffect, useState } from "react";
 import { Dropdown } from "../../components/componentsExport";
+import HighDetailCard from "../../components/HighDetailCard";
+import HeaderSection from "../../components/HeaderSection";
 
 export default function SellerOrders() {
   const dispatch = useDispatch();
@@ -33,41 +35,49 @@ export default function SellerOrders() {
   }, [currentUser]);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-200 rounded-lg shadow-md">
-        <thead className="bg-gray-100">
-          <tr>
-            {tableHeaderText.map((text, index) => (
-              <th
-                key={index + 1}
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                {text}
-              </th>
-            ))}
-          </tr>
-        </thead>
+    <>
+      {/* Head Section  */}
+      <HeaderSection
+        title="Order Management"
+        description="Manage and monitor all orders"
+      />
 
-        <tbody className="divide-y divide-gray-200">
-          {allOrders &&
-            allOrders.map((order, index) => (
-              <SellerOrdersTableRow
-                key={order._id}
-                sno={index + 1}
-                id={order._id}
-                name={order.user.fullname}
-                totalAmount={order.totalamount}
-                quantity={order.products[0].quantity}
-                product={order.products[0].product.name}
-                status={order.status}
-                updateFunction={(event) => {
-                  updateOrderStatus(order._id, event.target.value);
-                }}
-              />
-            ))}
-        </tbody>
-      </table>
-    </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border border-gray-200 rounded-lg shadow-md">
+          <thead className="bg-gray-100">
+            <tr>
+              {tableHeaderText.map((text, index) => (
+                <th
+                  key={index + 1}
+                  className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
+                >
+                  {text}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-gray-200">
+            {allOrders &&
+              allOrders.map((order, index) => (
+                <SellerOrdersTableRow
+                  key={order._id}
+                  sno={index + 1}
+                  id={order._id}
+                  name={order.user.fullname}
+                  totalAmount={order.totalamount}
+                  quantity={order.products[0].quantity}
+                  product={order.products[0].product.name}
+                  status={order.status}
+                  updateFunction={(event) => {
+                    updateOrderStatus(order._id, event.target.value);
+                  }}
+                />
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 

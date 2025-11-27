@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteProduct,
@@ -8,13 +8,34 @@ import { FaArrowTrendUp, FaBoxArchive, FaBoxOpen } from "react-icons/fa6";
 import { HiCurrencyDollar } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
-import HighDetailCard from "./components/HighDetailCard";
+import HighDetailCard from "../../components/HighDetailCard";
 import StatsCard from "../../components/cards/StatsCard";
-import HeaderSection from "./components/HeaderSection";
+import HeaderSection from "../../components/HeaderSection";
+import SearchBar from "./components/SearchBar";
+import {
+  CountColumn,
+  DeleteButton,
+  NameColumn,
+} from "./components/TableFields";
+import { DollarSign, Package2, ShoppingBag, Users } from "lucide-react";
 
 export default function AdminProducts() {
   const dispatch = useDispatch();
   const { allProducts } = useSelector((state) => state.admin);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const tableHeaderText = [
+    "S.No",
+    "Product Name",
+    "Current Stock",
+    "Sold",
+    "Price",
+    "",
+  ];
+
+  function searchTermChange(event) {
+    setSearchTerm(event.target.value);
+  }
 
   useEffect(() => {
     dispatch(getAllProductsDetails());
@@ -60,109 +81,103 @@ export default function AdminProducts() {
           />
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {allProducts.map((product, index) => (
-            <ProductCard
-              key={product._id}
-              sno={index + 1}
-              name={product.name}
-              price={product.price}
-              stock={product.stock}
-              totalSold={product.totalSelled}
-              id={product._id}
-              clickAction={() => {
-                deleteProductFunction(product._id);
-              }}
-            />
-          ))}
+        {/* Search Bar  */}
+        <SearchBar searchTerm={searchTerm} onChange={searchTermChange} />
+
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+                <tr>
+                  {tableHeaderText.map((text, index) => (
+                    <th
+                      key={index}
+                      className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                    >
+                      {text}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-100">
+                {allProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center justify-center text-gray-400">
+                        <Users className="w-12 h-12 mb-3 opacity-50" />
+                        <p className="text-lg font-medium">No order found</p>
+                        <p className="text-sm">
+                          Try adjusting your search criteria
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  allProducts.map((product, index) => (
+                    <ProductTableRow
+                      key={product._id}
+                      sno={index + 1}
+                      id={product._id}
+                      name={product.name}
+                      price={product.price}
+                      stock={product.stock}
+                      totalSold={product.totalSelled}
+                      onClick={() => {
+                        deleteProductFunction(product._id);
+                      }}
+                    />
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function ProductCard({ sno, name, price, stock, totalSold, clickAction }) {
+function ProductTableRow({
+  sno,
+  id,
+  name = "",
+  price = "",
+  stock = "",
+  totalSold = "",
+  onClick = () => {},
+}) {
   return (
-    <div className="bg-white rounded-xl shadow-md border border-slate-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
-      {/* Card Body */}
-      <div className="p-5">
-        {/* Product Name */}
-        <h3 className="text-xl font-bold text-slate-800 mb-4 truncate">
-          {name}
-        </h3>
-
-        {/* Product Details Grid */}
-        <div className="space-y-3 mb-5">
-          {/* Price */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <HiCurrencyDollar className="w-4 h-4 text-green-600" />
-              </div>
-              <span className="text-sm font-medium text-slate-600">Price</span>
-            </div>
-            <span className="text-lg font-bold text-slate-800">${price}</span>
-          </div>
-
-          {/* Stock Status */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  stock > 0 ? "bg-green-100" : "bg-red-100"
-                }`}
-              >
-                <FaBoxOpen
-                  className={`w-4 h-4 ${
-                    stock > 0 ? "text-green-600" : "text-red-600"
-                  }`}
-                />
-              </div>
-              <span className="text-sm font-medium text-slate-600">Stock</span>
-            </div>
-            <span
-              className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full ${
-                stock > 0
-                  ? "text-green-700 bg-green-50 border border-green-200"
-                  : "text-red-700 bg-red-50 border border-red-200"
-              }`}
-            >
-              <span
-                className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                  stock > 0 ? "bg-green-500" : "bg-red-500"
-                }`}
-              ></span>
-              {stock > 0 ? `${stock} units` : "Out"}
-            </span>
-          </div>
-
-          {/* Total Sold */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                <FaArrowTrendUp className="w-4 h-4 text-purple-600" />
-              </div>
-              <span className="text-sm font-medium text-slate-600">Sold</span>
-            </div>
-            <span className="text-lg font-bold text-purple-600">
-              {totalSold}
-              <span className="text-xs font-normal text-slate-500 ml-1">
-                units
-              </span>
-            </span>
-          </div>
-        </div>
-
-        {/* Delete Button */}
-        <button
-          onClick={clickAction}
-          className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-        >
-          <MdDelete className="w-4 h-4 mr-2" />
-          Delete Product
-        </button>
-      </div>
-    </div>
+    <tr className="hover:bg-gray-50">
+      <td className="px-6 py-4 text-sm text-gray-700">{sno}</td>
+      <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+        <NameColumn name={name} />
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-700">
+        <CountColumn
+          color="purple"
+          icon={<Package2 className="w-3 h-3 mr-1" />}
+          value={stock}
+        />
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-700">
+        <CountColumn
+          color="blue"
+          icon={<ShoppingBag className="w-3 h-3 mr-1" />}
+          value={totalSold}
+        />
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-700">
+        <CountColumn
+          color="green"
+          icon={<DollarSign className="w-3 h-3 mr-1" />}
+          value={price.toLocaleString()}
+        />
+      </td>
+      <td className="px-6 py-4 text-center">
+        <DeleteButton onClick={onClick} />
+      </td>
+    </tr>
   );
 }

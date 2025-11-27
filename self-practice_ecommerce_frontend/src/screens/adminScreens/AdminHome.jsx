@@ -12,6 +12,7 @@ import {
   getAllSellersData,
   getAllUsersData,
   getFilterDetails,
+  getTopSellerData,
   getTopUsersData,
 } from "../../feature/admin.store";
 import UserListTile from "./components/UserListTile";
@@ -19,15 +20,15 @@ import SellerListTile from "./components/SellerListTile";
 
 export default function AdminHome() {
   const dispatch = useDispatch();
-  const { allUsers, allSellers, allFilterData, topUsers } = useSelector(
-    (state) => state.admin
-  );
+  const { allUsers, allSellers, allFilterData, topUsers, topSeller } =
+    useSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(getAllUsersData());
     dispatch(getAllSellersData());
     dispatch(getFilterDetails());
     dispatch(getTopUsersData());
+    dispatch(getTopSellerData());
     console.log("this is running");
   }, []);
 
@@ -72,13 +73,13 @@ export default function AdminHome() {
             <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-x">
               <h1 className="text-3xl font-bold">Top Buyers</h1>
               <hr className="my-3" />
-              <UserListTile />
+              <UserListTile data={topUsers} />
             </div>
 
             <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
               <h1 className="text-3xl font-bold">Top Sellers</h1>
               <hr className="my-3" />
-              <SellerListTile />
+              <SellerListTile data={topSeller} />
             </div>
           </div>
         </div>
