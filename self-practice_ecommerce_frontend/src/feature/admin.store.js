@@ -9,6 +9,7 @@ const initialState = {
   allOrders: [],
   allFilterData: {},
   topUsers: [],
+  topSeller: [],
 };
 
 export const getAllUsersData = createAsyncThunk(
@@ -41,6 +42,18 @@ export const getAllSellersData = createAsyncThunk(
     const responce = await axios.get(`${baseURL}/admin-dashboard/seller`);
 
     console.log(responce.data);
+    return responce.data;
+  }
+);
+
+export const getTopSellerData = createAsyncThunk(
+  "admin/getTopSellerData",
+  async () => {
+    const responce = await axios.get(
+      `${baseURL}/admin-dashboard/topsellerbyamount`
+    );
+
+    console.log("This is top Seller: ", responce.data);
     return responce.data;
   }
 );
@@ -157,6 +170,13 @@ const adminSlice = createSlice({
         console.log(state.allSellers);
       })
       .addCase(getAllSellersData.rejected, (state, action) => {})
+
+      .addCase(getTopSellerData.pending, (state, action) => {})
+      .addCase(getTopSellerData.fulfilled, (state, action) => {
+        state.topSeller = action.payload?.data?.responceData;
+        console.log(state.topSeller);
+      })
+      .addCase(getTopSellerData.rejected, (state, action) => {})
 
       .addCase(getAllProductsDetails.pending, (state, action) => {})
       .addCase(getAllProductsDetails.fulfilled, (state, action) => {
