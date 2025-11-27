@@ -41,7 +41,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex">
       <SideNavifation sideMenuHeading="Admin" sideMenuItems={menuItems} />
-      <main className="ml-64 flex-1 bg-gray-100 min-h-screen p-6">
+      <main className="ml-64 flex-1 min-h-screen p-6">
         <Outlet />
       </main>
     </div>

@@ -8,7 +8,7 @@ export default function Dropdown({
 }) {
   return (
     <select
-      className={style}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 outline-none`}
       name={name}
       defaultValue={defaultValue}
       required={required}

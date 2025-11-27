@@ -72,9 +72,10 @@ export async function topUsersBasedOnOrder(req, res) {
   try {
     const topUser = await User.find({ role: "user", active: true })
       .sort({
-        totalorders: "desc",
+        totalorders: -1,
       })
-      .limit(5);
+      .limit(5)
+      .select("fullname totalorderamount totalorders email");
     ApiResponce({
       res,
       statusCode: 200,

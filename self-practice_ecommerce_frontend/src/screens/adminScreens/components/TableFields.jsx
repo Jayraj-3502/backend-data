@@ -1,3 +1,5 @@
+import { Trash2 } from "lucide-react";
+
 export function NameColumn({ name = "" }) {
   return (
     <div className="flex items-center">

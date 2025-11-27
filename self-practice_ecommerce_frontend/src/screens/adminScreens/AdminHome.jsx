@@ -12,11 +12,14 @@ import {
   getAllSellersData,
   getAllUsersData,
   getFilterDetails,
+  getTopUsersData,
 } from "../../feature/admin.store";
+import UserListTile from "./components/UserListTile";
+import SellerListTile from "./components/SellerListTile";
 
 export default function AdminHome() {
   const dispatch = useDispatch();
-  const { allUsers, allSellers, allFilterData } = useSelector(
+  const { allUsers, allSellers, allFilterData, topUsers } = useSelector(
     (state) => state.admin
   );
 
@@ -24,6 +27,7 @@ export default function AdminHome() {
     dispatch(getAllUsersData());
     dispatch(getAllSellersData());
     dispatch(getFilterDetails());
+    dispatch(getTopUsersData());
     console.log("this is running");
   }, []);
 
@@ -63,25 +67,19 @@ export default function AdminHome() {
         </div>
 
         {/* Details Sections */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
-            <UserDetailsForAdmin />
-          </div>
+        <div className="">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-x">
+              <h1 className="text-3xl font-bold">Top Buyers</h1>
+              <hr className="my-3" />
+              <UserListTile />
+            </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
-            <SellerDetailsForAdmin />
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
-            <UserMainCard
-              displayData={allUsers}
-              cardText="Order in number"
-              moneyText="Total order amount"
-            />
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
-            <SellerMainCard displayData={allSellers} />
+            <div className="bg-white rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
+              <h1 className="text-3xl font-bold">Top Sellers</h1>
+              <hr className="my-3" />
+              <SellerListTile />
+            </div>
           </div>
         </div>
       </div>
