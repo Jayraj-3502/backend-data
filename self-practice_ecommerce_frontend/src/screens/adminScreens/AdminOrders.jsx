@@ -9,6 +9,7 @@ import StatsCard from "../../components/StatsCard.jsx";
 
 import SearchBar from "./components/SearchBar";
 import { CountColumn, NameColumn } from "./components/TableFields";
+import EmptyTable from "../../components/EmptyTable.jsx";
 
 export default function AdminOrders() {
   const dispatch = useDispatch();
@@ -102,15 +103,7 @@ export default function AdminOrders() {
             <tbody className="divide-y divide-gray-100">
               {allOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center justify-center text-gray-400">
-                      <Users className="w-12 h-12 mb-3 opacity-50" />
-                      <p className="text-lg font-medium">No order found</p>
-                      <p className="text-sm">
-                        Try adjusting your search criteria
-                      </p>
-                    </div>
-                  </td>
+                  <EmptyTable heading="No Order Found" />
                 </tr>
               ) : (
                 allOrders.map((order, index) => (

@@ -18,6 +18,7 @@ import {
   NameColumn,
 } from "./components/TableFields";
 import { DollarSign, Package2, ShoppingBag, Users } from "lucide-react";
+import EmptyTable from "../../components/EmptyTable.jsx";
 
 export default function AdminProducts() {
   const dispatch = useDispatch();
@@ -64,13 +65,6 @@ export default function AdminProducts() {
             color="blue"
           />
           <StatsCard
-            title="In Stock"
-            value={allProducts.filter((p) => p.stock > 0).length}
-            icon={<SiTicktick className="w-6 h-6 text-white-600" />}
-            color="green"
-          />
-
-          <StatsCard
             title="Total Sold"
             value={allProducts.reduce(
               (sum, p) => sum + (p.totalSelled || 0),
@@ -78,6 +72,12 @@ export default function AdminProducts() {
             )}
             icon={<FaArrowTrendUp className="w-6 h-6 text-white-600" />}
             color="purple"
+          />
+          <StatsCard
+            title="In Stock"
+            value={allProducts.filter((p) => p.stock > 0).length}
+            icon={<SiTicktick className="w-6 h-6 text-white-600" />}
+            color="green"
           />
         </div>
 
@@ -104,15 +104,7 @@ export default function AdminProducts() {
               <tbody className="divide-y divide-gray-100">
                 {allProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center text-gray-400">
-                        <Users className="w-12 h-12 mb-3 opacity-50" />
-                        <p className="text-lg font-medium">No order found</p>
-                        <p className="text-sm">
-                          Try adjusting your search criteria
-                        </p>
-                      </div>
-                    </td>
+                    <EmptyTable heading="No Product found" />
                   </tr>
                 ) : (
                   allProducts.map((product, index) => (
