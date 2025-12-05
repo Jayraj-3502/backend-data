@@ -10,6 +10,8 @@ import SellerDetailsForAdmin from "./tiles/admin/SellerDetailsForAdmin";
 import FullProductDetails from "./cards/FullProductDetails";
 import TopNavigation from "./navbar/TopNavigation";
 import Popup from "./popup/Popup";
+import HighDetailCard from "./HighDetailCard.jsx";
+import StatsCard from "./StatsCard.jsx";
 
 export {
   Button,
@@ -24,4 +26,6 @@ export {
   FullProductDetails,
   TopNavigation,
   Popup,
+  HighDetailCard,
+  StatsCard,
 };

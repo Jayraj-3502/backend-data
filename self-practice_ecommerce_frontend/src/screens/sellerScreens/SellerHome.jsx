@@ -15,6 +15,8 @@ import {
   getDeliveryStatusForSeller,
   getTotalFilterForSeller,
 } from "../../feature/seller.store";
+import StatsCard from "../../components/StatsCard.jsx";
+import HeaderSection from "../../components/HeaderSection.jsx";
 
 export default function SellerHome() {
   const dispatch = useDispatch();
@@ -27,48 +29,51 @@ export default function SellerHome() {
   }, [tokenDetails]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="">
+      <HeaderSection
+        title="Dashboard Overview"
+        description="Monitor your business metrics and performance"
+      />
       {/* Main */}
-      <main className="p-6">
+      <main className="">
         {/* ====== MAIN STATS CARDS ====== */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Overview</h2>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card
-              icon={<FaBox className="text-blue-500 text-3xl" />}
+            <StatsCard
               title="Total Products"
               value={currentUser.totalproductofseller}
+              icon={<FaBox />}
+              color="blue"
             />
-
-            <Card
-              icon={<FaWarehouse className="text-teal-500 text-3xl" />}
+            <StatsCard
               title="Total Stock"
               value={totalFilters.totalStockCount}
+              icon={<FaWarehouse />}
+              color="teal"
             />
-
-            <Card
-              icon={<FaShoppingCart className="text-green-500 text-3xl" />}
+            <StatsCard
               title="Total Orders"
               value={totalFilters.totalOrderCount}
+              icon={<FaShoppingCart />}
+              color="green"
             />
-
-            <Card
-              icon={<FaUsers className="text-purple-500 text-3xl" />}
+            <StatsCard
               title="Total Customers"
               value={totalFilters.totalCustomersCount}
+              icon={<FaUsers />}
+              color="purple"
             />
-
-            <Card
-              icon={<FaCheckCircle className="text-orange-500 text-3xl" />}
+            <StatsCard
               title="Items Sold"
               value={currentUser.totalproductsselled}
+              icon={<FaCheckCircle />}
+              color="orange"
             />
-
-            <Card
-              icon={<FaMoneyBill className="text-yellow-500 text-3xl" />}
+            <StatsCard
               title="Total Revenue"
-              value={currentUser.totalproductsselledamount}
+              value={`$ ${currentUser.totalproductsselledamount.toLocaleString()}`}
+              icon={<FaMoneyBill />}
+              color="yellow"
             />
           </div>
         </section>
@@ -78,34 +83,35 @@ export default function SellerHome() {
           <h2 className="text-xl font-semibold mb-4">Order Status</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            <Card
-              icon={<FaHourglassHalf className="text-yellow-500 text-3xl" />}
+            <StatsCard
               title="Pending"
               value={deliveryStatus.pending}
+              icon={<FaHourglassHalf />}
+              color="yellow"
             />
-
-            <Card
-              icon={<FaBox className="text-blue-500 text-3xl" />}
+            <StatsCard
               title="Processing"
               value={deliveryStatus.processing}
+              icon={<FaBox />}
+              color="blue"
             />
-
-            <Card
-              icon={<FaTruck className="text-indigo-500 text-3xl" />}
+            <StatsCard
               title="Shipping"
               value={deliveryStatus.shipping}
+              icon={<FaTruck />}
+              color="indigo"
             />
-
-            <Card
-              icon={<FaCheckCircle className="text-green-600 text-3xl" />}
+            <StatsCard
               title="Delivered"
               value={deliveryStatus.delivered}
+              icon={<FaCheckCircle />}
+              color="green"
             />
-
-            <Card
-              icon={<FaTimesCircle className="text-red-500 text-3xl" />}
+            <StatsCard
               title="Cancelled"
               value={deliveryStatus.cancled}
+              icon={<FaTimesCircle />}
+              color="red"
             />
           </div>
         </section>

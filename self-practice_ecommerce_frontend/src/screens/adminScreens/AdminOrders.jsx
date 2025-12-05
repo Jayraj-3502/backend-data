@@ -5,7 +5,8 @@ import { Dropdown } from "../../components/componentsExport";
 import { updateOrderStatusForSeller } from "../../feature/seller.store";
 import { DollarSign, Package2, ShoppingBag, Users } from "lucide-react";
 import HeaderSection from "../../components/HeaderSection";
-import StatsCard from "../../components/cards/StatsCard";
+import StatsCard from "../../components/StatsCard.jsx";
+
 import SearchBar from "./components/SearchBar";
 import { CountColumn, NameColumn } from "./components/TableFields";
 

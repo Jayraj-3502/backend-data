@@ -315,7 +315,7 @@ function ProfileButtons({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center px-5 py-2.5 bg-linear-to-r from-${color}-600 to-${color}-600 hover:from-${color}-700 hover:to-${color}-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200`}
+      className={`inline-flex items-center px-5 py-2.5  bg-${color}-600 hover:bg-${color}-700  text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200`}
     >
       {icon}
       {text}

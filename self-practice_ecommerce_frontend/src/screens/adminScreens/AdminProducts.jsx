@@ -9,7 +9,7 @@ import { HiCurrencyDollar } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
 import HighDetailCard from "../../components/HighDetailCard";
-import StatsCard from "../../components/cards/StatsCard";
+import StatsCard from "../../components/StatsCard.jsx";
 import HeaderSection from "../../components/HeaderSection";
 import SearchBar from "./components/SearchBar";
 import {

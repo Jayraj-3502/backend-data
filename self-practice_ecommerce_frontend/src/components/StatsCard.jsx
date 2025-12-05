@@ -13,7 +13,7 @@ export default function StatsCard({
       <div className="relative p-6">
         <div className="flex items-start justify-between mb-4">
           <div
-            className={`p-4 rounded-xl bg-linear-to-br from-${color}-500 to-${color}-600 text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}
+            className={`p-4 rounded-xl bg-${color}-600 text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}
           >
             <div className="text-2xl">{icon}</div>
           </div>

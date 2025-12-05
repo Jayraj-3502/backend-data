@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Users, ShoppingBag, DollarSign, Search } from "lucide-react";
 import { deleteUserForAdmin, getAllUsersData } from "../../feature/admin.store";
 import HeaderSection from "../../components/HeaderSection.jsx";
-import StatsCard from "../../components/cards/StatsCard";
+import StatsCard from "../../components/StatsCard.jsx";
 import { NameColumn } from "./components/TableFields.jsx";
 import { CountColumn } from "./components/TableFields.jsx";
 import { DeleteButton } from "./components/TableFields.jsx";

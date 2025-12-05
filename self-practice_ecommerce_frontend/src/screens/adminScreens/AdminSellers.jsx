@@ -6,7 +6,7 @@ import {
   getAllSellersData,
 } from "../../feature/admin.store";
 import HeaderSection from "../../components/HeaderSection.jsx";
-import StatsCard from "../../components/cards/StatsCard";
+import StatsCard from "../../components/StatsCard.jsx";
 import {
   DollarSign,
   Package2,

@@ -13,9 +13,9 @@ const ListTile = ({
     <>
       <div className="relative flex items-center gap-3 p-1">
         {/* Left side - Image with gradient ring */}
-        <div className="flex-shrink-0 relative">
+        <div className="shrink-0 relative">
           {imageUrl === "" ? (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold mr-3">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold mr-3">
               {name.charAt(0).toUpperCase()}
             </div>
           ) : (
